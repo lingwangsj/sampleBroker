@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity AP.
+    -->
+    <changeSet id="20180119220921-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="wg24_id"
+                                 baseTableName="ap"
+                                 constraintName="fk_ap_wg24_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wlan_group"/>
+
+        <addForeignKeyConstraint baseColumnNames="wg50_id"
+                                 baseTableName="ap"
+                                 constraintName="fk_ap_wg50_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wlan_group"/>
+
+        <addForeignKeyConstraint baseColumnNames="zone_id"
+                                 baseTableName="ap"
+                                 constraintName="fk_ap_zone_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="zone"/>
+
+    </changeSet>
+</databaseChangeLog>

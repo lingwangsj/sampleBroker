@@ -1,0 +1,68 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myAPLabel">Create or edit a AP</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!aP.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="aP.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_serialNumber">Serial Number</label>
+            <input type="text" class="form-control" name="serialNumber" id="field_serialNumber"
+                [(ngModel)]="aP.serialNumber" required/>
+            <div [hidden]="!(editForm.controls.serialNumber?.dirty && editForm.controls.serialNumber?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.serialNumber?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_apName">Ap Name</label>
+            <input type="text" class="form-control" name="apName" id="field_apName"
+                [(ngModel)]="aP.apName" required/>
+            <div [hidden]="!(editForm.controls.apName?.dirty && editForm.controls.apName?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.apName?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_wg24">Wg 24</label>
+            <select class="form-control" id="field_wg24" name="wg24" [(ngModel)]="aP.wg24">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="wlanGroupOption.id === aP.wg24?.id ? aP.wg24 : wlanGroupOption" *ngFor="let wlanGroupOption of wg24s; trackBy: trackWlanGroupById">{{wlanGroupOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_wg50">Wg 50</label>
+            <select class="form-control" id="field_wg50" name="wg50" [(ngModel)]="aP.wg50">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="wlanGroupOption.id === aP.wg50?.id ? aP.wg50 : wlanGroupOption" *ngFor="let wlanGroupOption of wg50s; trackBy: trackWlanGroupById">{{wlanGroupOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_zone">Zone</label>
+            <select class="form-control" id="field_zone" name="zone" [(ngModel)]="aP.zone" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="zoneOption.id === aP.zone?.id ? aP.zone : zoneOption" *ngFor="let zoneOption of zones; trackBy: trackZoneById">{{zoneOption.id}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

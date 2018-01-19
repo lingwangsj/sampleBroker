@@ -1,0 +1,52 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "ap",
+            "otherEntityName": "aP",
+            "otherEntityRelationshipName": "zone"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "wlanGroup",
+            "otherEntityName": "wlanGroup",
+            "otherEntityRelationshipName": "zone"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "wlan",
+            "otherEntityName": "wlan",
+            "otherEntityRelationshipName": "zone"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "domain",
+            "otherEntityName": "domain",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "venueId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "zoneName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20180119220918",
+    "entityTableName": "zone",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "angularJSSuffix": "mySuffix"
+}

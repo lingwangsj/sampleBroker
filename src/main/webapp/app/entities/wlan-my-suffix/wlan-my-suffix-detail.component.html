@@ -1,0 +1,36 @@
+
+<div *ngIf="wlan">
+    <h2><span>Wlan</span> {{wlan.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Network Id</span></dt>
+        <dd>
+            <span>{{wlan.networkId}}</span>
+        </dd>
+        <dt><span>Wlan Name</span></dt>
+        <dd>
+            <span>{{wlan.wlanName}}</span>
+        </dd>
+        <dt><span>Zone</span></dt>
+        <dd>
+            <div *ngIf="wlan.zone">
+                <a [routerLink]="['/zone-my-suffix', wlan.zone?.id]">{{wlan.zone?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'wlan-my-suffix/'+ wlan.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,36 @@
+
+<div *ngIf="zone">
+    <h2><span>Zone</span> {{zone.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Venue Id</span></dt>
+        <dd>
+            <span>{{zone.venueId}}</span>
+        </dd>
+        <dt><span>Zone Name</span></dt>
+        <dd>
+            <span>{{zone.zoneName}}</span>
+        </dd>
+        <dt><span>Domain</span></dt>
+        <dd>
+            <div *ngIf="zone.domain">
+                <a [routerLink]="['/domain-my-suffix', zone.domain?.id]">{{zone.domain?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'zone-my-suffix/'+ zone.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>
