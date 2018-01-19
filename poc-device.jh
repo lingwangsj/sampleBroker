@@ -1,0 +1,51 @@
+entity Domain {
+    tenantId String required
+	domainName String required
+}
+
+entity Zone {
+	venueId String required
+	zoneName String required
+}
+
+entity Wlan {
+    networkId String required
+	wlanName String required
+}
+
+entity WlanGroup {
+	groupName String required
+}
+
+entity AP {
+	serialNumber String required,
+    apName String required
+}
+
+relationship OneToOne {
+    AP{wg24} to WlanGroup,
+    AP{wg50} to WlanGroup
+}
+
+relationship ManyToMany {
+	WlanGroup{members} to Wlan{group}
+}
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+    Domain{zone} to Zone{domain},
+    Zone{ap} to AP{zone},
+    Zone{wlanGroup} to WlanGroup{zone},
+    Zone{wlan} to Wlan{zone}
+}
+
+// Set pagination options
+//paginate JobHistory, Employee with infinite-scroll
+//paginate Job with pagination
+
+//dto * with mapstruct
+
+// Set service options to all except few
+filter *
+// Set an angular suffix
+angularSuffix * with mySuffix
