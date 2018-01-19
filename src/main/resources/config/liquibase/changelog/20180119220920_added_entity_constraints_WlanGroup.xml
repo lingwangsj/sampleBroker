@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity WlanGroup.
+    -->
+    <changeSet id="20180119220920-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="wlan_groups_id"
+                                 baseTableName="wlan_group_members"
+                                 constraintName="fk_wlan_group_members_wlan_groups_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wlan_group"/>
+        <addForeignKeyConstraint baseColumnNames="members_id"
+                                 baseTableName="wlan_group_members"
+                                 constraintName="fk_wlan_group_members_members_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wlan"/>
+        
+        <addForeignKeyConstraint baseColumnNames="zone_id"
+                                 baseTableName="wlan_group"
+                                 constraintName="fk_wlan_group_zone_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="zone"/>
+
+    </changeSet>
+</databaseChangeLog>

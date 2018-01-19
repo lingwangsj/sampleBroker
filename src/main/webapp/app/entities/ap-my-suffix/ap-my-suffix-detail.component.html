@@ -1,0 +1,48 @@
+
+<div *ngIf="aP">
+    <h2><span>AP</span> {{aP.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Serial Number</span></dt>
+        <dd>
+            <span>{{aP.serialNumber}}</span>
+        </dd>
+        <dt><span>Ap Name</span></dt>
+        <dd>
+            <span>{{aP.apName}}</span>
+        </dd>
+        <dt><span>Wg 24</span></dt>
+        <dd>
+            <div *ngIf="aP.wg24">
+                <a [routerLink]="['/wlan-group-my-suffix', aP.wg24?.id]">{{aP.wg24?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Wg 50</span></dt>
+        <dd>
+            <div *ngIf="aP.wg50">
+                <a [routerLink]="['/wlan-group-my-suffix', aP.wg50?.id]">{{aP.wg50?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Zone</span></dt>
+        <dd>
+            <div *ngIf="aP.zone">
+                <a [routerLink]="['/zone-my-suffix', aP.zone?.id]">{{aP.zone?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'ap-my-suffix/'+ aP.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,78 @@
+<div>
+    <h2>
+        <span>APS</span>
+        <button class="btn btn-primary float-right jh-create-entity create-ap-my-suffix" [routerLink]="['/', { outlets: { popup: ['ap-my-suffix-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span >
+            Create new AP
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="aPS">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Serial Number</span></th>
+            <th><span>Ap Name</span></th>
+            <th><span>Wg 24</span></th>
+            <th><span>Wg 50</span></th>
+            <th><span>Zone</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let aP of aPS ;trackBy: trackId">
+                <td><a [routerLink]="['../ap-my-suffix', aP.id ]">{{aP.id}}</a></td>
+                <td>{{aP.serialNumber}}</td>
+                <td>{{aP.apName}}</td>
+                <td>
+                    <div *ngIf="aP.wg24">
+                        <a [routerLink]="['../wlan-group-my-suffix', aP.wg24?.id ]" >{{aP.wg24?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="aP.wg50">
+                        <a [routerLink]="['../wlan-group-my-suffix', aP.wg50?.id ]" >{{aP.wg50?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="aP.zone">
+                        <a [routerLink]="['../zone-my-suffix', aP.zone?.id ]" >{{aP.zone?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../ap-my-suffix', aP.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'ap-my-suffix/'+ aP.id + '/edit'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'ap-my-suffix/'+ aP.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

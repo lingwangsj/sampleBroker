@@ -1,0 +1,66 @@
+<div>
+    <h2>
+        <span>Wlans</span>
+        <button class="btn btn-primary float-right jh-create-entity create-wlan-my-suffix" [routerLink]="['/', { outlets: { popup: ['wlan-my-suffix-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span >
+            Create new Wlan
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="wlans">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Network Id</span></th>
+            <th><span>Wlan Name</span></th>
+            <th><span>Zone</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let wlan of wlans ;trackBy: trackId">
+                <td><a [routerLink]="['../wlan-my-suffix', wlan.id ]">{{wlan.id}}</a></td>
+                <td>{{wlan.networkId}}</td>
+                <td>{{wlan.wlanName}}</td>
+                <td>
+                    <div *ngIf="wlan.zone">
+                        <a [routerLink]="['../zone-my-suffix', wlan.zone?.id ]" >{{wlan.zone?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../wlan-my-suffix', wlan.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'wlan-my-suffix/'+ wlan.id + '/edit'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'wlan-my-suffix/'+ wlan.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
