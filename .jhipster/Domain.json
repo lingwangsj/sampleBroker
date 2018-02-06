@@ -10,14 +10,28 @@
     ],
     "fields": [
         {
-            "fieldName": "tenantId",
+            "fieldName": "serviceId",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "domainName",
+            "fieldName": "deviceId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "serviceName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "deviceName",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
@@ -27,7 +41,7 @@
     "changelogDate": "20180119220917",
     "entityTableName": "domain",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "angularJSSuffix": "mySuffix"

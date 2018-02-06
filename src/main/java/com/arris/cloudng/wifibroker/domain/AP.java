@@ -22,23 +22,15 @@ public class AP implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "serial_number", nullable = false)
-    private String serialNumber;
+    @Column(name = "service_id", nullable = false)
+    private String serviceId;
 
     @NotNull
-    @Column(name = "ap_name", nullable = false)
-    private String apName;
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private WlanGroup wg24;
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private WlanGroup wg50;
+    @Column(name = "service_name", nullable = false)
+    private String serviceName;
 
     @ManyToOne
-    private Zone zone;
+    private APGroup apgroup;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -49,69 +41,43 @@ public class AP implements Serializable {
         this.id = id;
     }
 
-    public String getSerialNumber() {
-        return serialNumber;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public AP serialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+    public AP serviceId(String serviceId) {
+        this.serviceId = serviceId;
         return this;
     }
 
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public String getApName() {
-        return apName;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public AP apName(String apName) {
-        this.apName = apName;
+    public AP serviceName(String serviceName) {
+        this.serviceName = serviceName;
         return this;
     }
 
-    public void setApName(String apName) {
-        this.apName = apName;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
-    public WlanGroup getWg24() {
-        return wg24;
+    public APGroup getApgroup() {
+        return apgroup;
     }
 
-    public AP wg24(WlanGroup wlanGroup) {
-        this.wg24 = wlanGroup;
+    public AP apgroup(APGroup aPGroup) {
+        this.apgroup = aPGroup;
         return this;
     }
 
-    public void setWg24(WlanGroup wlanGroup) {
-        this.wg24 = wlanGroup;
-    }
-
-    public WlanGroup getWg50() {
-        return wg50;
-    }
-
-    public AP wg50(WlanGroup wlanGroup) {
-        this.wg50 = wlanGroup;
-        return this;
-    }
-
-    public void setWg50(WlanGroup wlanGroup) {
-        this.wg50 = wlanGroup;
-    }
-
-    public Zone getZone() {
-        return zone;
-    }
-
-    public AP zone(Zone zone) {
-        this.zone = zone;
-        return this;
-    }
-
-    public void setZone(Zone zone) {
-        this.zone = zone;
+    public void setApgroup(APGroup aPGroup) {
+        this.apgroup = aPGroup;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -139,8 +105,8 @@ public class AP implements Serializable {
     public String toString() {
         return "AP{" +
             "id=" + getId() +
-            ", serialNumber='" + getSerialNumber() + "'" +
-            ", apName='" + getApName() + "'" +
+            ", serviceId='" + getServiceId() + "'" +
+            ", serviceName='" + getServiceName() + "'" +
             "}";
     }
 }

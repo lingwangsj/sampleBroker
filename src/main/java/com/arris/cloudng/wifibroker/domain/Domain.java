@@ -25,12 +25,20 @@ public class Domain implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "tenant_id", nullable = false)
-    private String tenantId;
+    @Column(name = "service_id", nullable = false)
+    private String serviceId;
 
     @NotNull
-    @Column(name = "domain_name", nullable = false)
-    private String domainName;
+    @Column(name = "device_id", nullable = false)
+    private String deviceId;
+
+    @NotNull
+    @Column(name = "service_name", nullable = false)
+    private String serviceName;
+
+    @NotNull
+    @Column(name = "device_name", nullable = false)
+    private String deviceName;
 
     @OneToMany(mappedBy = "domain")
     @JsonIgnore
@@ -45,30 +53,56 @@ public class Domain implements Serializable {
         this.id = id;
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public Domain tenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public Domain serviceId(String serviceId) {
+        this.serviceId = serviceId;
         return this;
     }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public String getDomainName() {
-        return domainName;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public Domain domainName(String domainName) {
-        this.domainName = domainName;
+    public Domain deviceId(String deviceId) {
+        this.deviceId = deviceId;
         return this;
     }
 
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public Domain serviceName(String serviceName) {
+        this.serviceName = serviceName;
+        return this;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public Domain deviceName(String deviceName) {
+        this.deviceName = deviceName;
+        return this;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     public Set<Zone> getZones() {
@@ -121,8 +155,10 @@ public class Domain implements Serializable {
     public String toString() {
         return "Domain{" +
             "id=" + getId() +
-            ", tenantId='" + getTenantId() + "'" +
-            ", domainName='" + getDomainName() + "'" +
+            ", serviceId='" + getServiceId() + "'" +
+            ", deviceId='" + getDeviceId() + "'" +
+            ", serviceName='" + getServiceName() + "'" +
+            ", deviceName='" + getDeviceName() + "'" +
             "}";
     }
 }

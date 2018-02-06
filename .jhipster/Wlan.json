@@ -17,14 +17,28 @@
     ],
     "fields": [
         {
-            "fieldName": "networkId",
+            "fieldName": "serviceId",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "wlanName",
+            "fieldName": "deviceId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "serviceName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "deviceName",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
@@ -34,7 +48,7 @@
     "changelogDate": "20180119220919",
     "entityTableName": "wlan",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "angularJSSuffix": "mySuffix"

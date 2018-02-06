@@ -28,15 +28,11 @@ public class APCriteria implements Serializable {
 
     private LongFilter id;
 
-    private StringFilter serialNumber;
+    private StringFilter serviceId;
 
-    private StringFilter apName;
+    private StringFilter serviceName;
 
-    private LongFilter wg24Id;
-
-    private LongFilter wg50Id;
-
-    private LongFilter zoneId;
+    private LongFilter apgroupId;
 
     public APCriteria() {
     }
@@ -49,55 +45,37 @@ public class APCriteria implements Serializable {
         this.id = id;
     }
 
-    public StringFilter getSerialNumber() {
-        return serialNumber;
+    public StringFilter getServiceId() {
+        return serviceId;
     }
 
-    public void setSerialNumber(StringFilter serialNumber) {
-        this.serialNumber = serialNumber;
+    public void setServiceId(StringFilter serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public StringFilter getApName() {
-        return apName;
+    public StringFilter getServiceName() {
+        return serviceName;
     }
 
-    public void setApName(StringFilter apName) {
-        this.apName = apName;
+    public void setServiceName(StringFilter serviceName) {
+        this.serviceName = serviceName;
     }
 
-    public LongFilter getWg24Id() {
-        return wg24Id;
+    public LongFilter getApgroupId() {
+        return apgroupId;
     }
 
-    public void setWg24Id(LongFilter wg24Id) {
-        this.wg24Id = wg24Id;
-    }
-
-    public LongFilter getWg50Id() {
-        return wg50Id;
-    }
-
-    public void setWg50Id(LongFilter wg50Id) {
-        this.wg50Id = wg50Id;
-    }
-
-    public LongFilter getZoneId() {
-        return zoneId;
-    }
-
-    public void setZoneId(LongFilter zoneId) {
-        this.zoneId = zoneId;
+    public void setApgroupId(LongFilter apgroupId) {
+        this.apgroupId = apgroupId;
     }
 
     @Override
     public String toString() {
         return "APCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (serialNumber != null ? "serialNumber=" + serialNumber + ", " : "") +
-                (apName != null ? "apName=" + apName + ", " : "") +
-                (wg24Id != null ? "wg24Id=" + wg24Id + ", " : "") +
-                (wg50Id != null ? "wg50Id=" + wg50Id + ", " : "") +
-                (zoneId != null ? "zoneId=" + zoneId + ", " : "") +
+                (serviceId != null ? "serviceId=" + serviceId + ", " : "") +
+                (serviceName != null ? "serviceName=" + serviceName + ", " : "") +
+                (apgroupId != null ? "apgroupId=" + apgroupId + ", " : "") +
             "}";
     }
 

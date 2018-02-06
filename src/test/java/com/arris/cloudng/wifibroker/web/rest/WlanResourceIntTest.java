@@ -43,11 +43,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SampleBrokerApp.class)
 public class WlanResourceIntTest {
 
-    private static final String DEFAULT_NETWORK_ID = "AAAAAAAAAA";
-    private static final String UPDATED_NETWORK_ID = "BBBBBBBBBB";
+    private static final String DEFAULT_SERVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_ID = "BBBBBBBBBB";
 
-    private static final String DEFAULT_WLAN_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_WLAN_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_DEVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_SERVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DEVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_NAME = "BBBBBBBBBB";
 
     @Autowired
     private WlanRepository wlanRepository;
@@ -93,8 +99,10 @@ public class WlanResourceIntTest {
      */
     public static Wlan createEntity(EntityManager em) {
         Wlan wlan = new Wlan()
-            .networkId(DEFAULT_NETWORK_ID)
-            .wlanName(DEFAULT_WLAN_NAME);
+            .serviceId(DEFAULT_SERVICE_ID)
+            .deviceId(DEFAULT_DEVICE_ID)
+            .serviceName(DEFAULT_SERVICE_NAME)
+            .deviceName(DEFAULT_DEVICE_NAME);
         return wlan;
     }
 
@@ -118,8 +126,10 @@ public class WlanResourceIntTest {
         List<Wlan> wlanList = wlanRepository.findAll();
         assertThat(wlanList).hasSize(databaseSizeBeforeCreate + 1);
         Wlan testWlan = wlanList.get(wlanList.size() - 1);
-        assertThat(testWlan.getNetworkId()).isEqualTo(DEFAULT_NETWORK_ID);
-        assertThat(testWlan.getWlanName()).isEqualTo(DEFAULT_WLAN_NAME);
+        assertThat(testWlan.getServiceId()).isEqualTo(DEFAULT_SERVICE_ID);
+        assertThat(testWlan.getDeviceId()).isEqualTo(DEFAULT_DEVICE_ID);
+        assertThat(testWlan.getServiceName()).isEqualTo(DEFAULT_SERVICE_NAME);
+        assertThat(testWlan.getDeviceName()).isEqualTo(DEFAULT_DEVICE_NAME);
     }
 
     @Test
@@ -143,10 +153,10 @@ public class WlanResourceIntTest {
 
     @Test
     @Transactional
-    public void checkNetworkIdIsRequired() throws Exception {
+    public void checkServiceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = wlanRepository.findAll().size();
         // set the field null
-        wlan.setNetworkId(null);
+        wlan.setServiceId(null);
 
         // Create the Wlan, which fails.
 
@@ -161,10 +171,46 @@ public class WlanResourceIntTest {
 
     @Test
     @Transactional
-    public void checkWlanNameIsRequired() throws Exception {
+    public void checkDeviceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = wlanRepository.findAll().size();
         // set the field null
-        wlan.setWlanName(null);
+        wlan.setDeviceId(null);
+
+        // Create the Wlan, which fails.
+
+        restWlanMockMvc.perform(post("/api/wlans")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(wlan)))
+            .andExpect(status().isBadRequest());
+
+        List<Wlan> wlanList = wlanRepository.findAll();
+        assertThat(wlanList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkServiceNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = wlanRepository.findAll().size();
+        // set the field null
+        wlan.setServiceName(null);
+
+        // Create the Wlan, which fails.
+
+        restWlanMockMvc.perform(post("/api/wlans")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(wlan)))
+            .andExpect(status().isBadRequest());
+
+        List<Wlan> wlanList = wlanRepository.findAll();
+        assertThat(wlanList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkDeviceNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = wlanRepository.findAll().size();
+        // set the field null
+        wlan.setDeviceName(null);
 
         // Create the Wlan, which fails.
 
@@ -188,8 +234,10 @@ public class WlanResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(wlan.getId().intValue())))
-            .andExpect(jsonPath("$.[*].networkId").value(hasItem(DEFAULT_NETWORK_ID.toString())))
-            .andExpect(jsonPath("$.[*].wlanName").value(hasItem(DEFAULT_WLAN_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     @Test
@@ -203,86 +251,166 @@ public class WlanResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(wlan.getId().intValue()))
-            .andExpect(jsonPath("$.networkId").value(DEFAULT_NETWORK_ID.toString()))
-            .andExpect(jsonPath("$.wlanName").value(DEFAULT_WLAN_NAME.toString()));
+            .andExpect(jsonPath("$.serviceId").value(DEFAULT_SERVICE_ID.toString()))
+            .andExpect(jsonPath("$.deviceId").value(DEFAULT_DEVICE_ID.toString()))
+            .andExpect(jsonPath("$.serviceName").value(DEFAULT_SERVICE_NAME.toString()))
+            .andExpect(jsonPath("$.deviceName").value(DEFAULT_DEVICE_NAME.toString()));
     }
 
     @Test
     @Transactional
-    public void getAllWlansByNetworkIdIsEqualToSomething() throws Exception {
+    public void getAllWlansByServiceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         wlanRepository.saveAndFlush(wlan);
 
-        // Get all the wlanList where networkId equals to DEFAULT_NETWORK_ID
-        defaultWlanShouldBeFound("networkId.equals=" + DEFAULT_NETWORK_ID);
+        // Get all the wlanList where serviceId equals to DEFAULT_SERVICE_ID
+        defaultWlanShouldBeFound("serviceId.equals=" + DEFAULT_SERVICE_ID);
 
-        // Get all the wlanList where networkId equals to UPDATED_NETWORK_ID
-        defaultWlanShouldNotBeFound("networkId.equals=" + UPDATED_NETWORK_ID);
+        // Get all the wlanList where serviceId equals to UPDATED_SERVICE_ID
+        defaultWlanShouldNotBeFound("serviceId.equals=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllWlansByNetworkIdIsInShouldWork() throws Exception {
+    public void getAllWlansByServiceIdIsInShouldWork() throws Exception {
         // Initialize the database
         wlanRepository.saveAndFlush(wlan);
 
-        // Get all the wlanList where networkId in DEFAULT_NETWORK_ID or UPDATED_NETWORK_ID
-        defaultWlanShouldBeFound("networkId.in=" + DEFAULT_NETWORK_ID + "," + UPDATED_NETWORK_ID);
+        // Get all the wlanList where serviceId in DEFAULT_SERVICE_ID or UPDATED_SERVICE_ID
+        defaultWlanShouldBeFound("serviceId.in=" + DEFAULT_SERVICE_ID + "," + UPDATED_SERVICE_ID);
 
-        // Get all the wlanList where networkId equals to UPDATED_NETWORK_ID
-        defaultWlanShouldNotBeFound("networkId.in=" + UPDATED_NETWORK_ID);
+        // Get all the wlanList where serviceId equals to UPDATED_SERVICE_ID
+        defaultWlanShouldNotBeFound("serviceId.in=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllWlansByNetworkIdIsNullOrNotNull() throws Exception {
+    public void getAllWlansByServiceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         wlanRepository.saveAndFlush(wlan);
 
-        // Get all the wlanList where networkId is not null
-        defaultWlanShouldBeFound("networkId.specified=true");
+        // Get all the wlanList where serviceId is not null
+        defaultWlanShouldBeFound("serviceId.specified=true");
 
-        // Get all the wlanList where networkId is null
-        defaultWlanShouldNotBeFound("networkId.specified=false");
+        // Get all the wlanList where serviceId is null
+        defaultWlanShouldNotBeFound("serviceId.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllWlansByWlanNameIsEqualToSomething() throws Exception {
+    public void getAllWlansByDeviceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         wlanRepository.saveAndFlush(wlan);
 
-        // Get all the wlanList where wlanName equals to DEFAULT_WLAN_NAME
-        defaultWlanShouldBeFound("wlanName.equals=" + DEFAULT_WLAN_NAME);
+        // Get all the wlanList where deviceId equals to DEFAULT_DEVICE_ID
+        defaultWlanShouldBeFound("deviceId.equals=" + DEFAULT_DEVICE_ID);
 
-        // Get all the wlanList where wlanName equals to UPDATED_WLAN_NAME
-        defaultWlanShouldNotBeFound("wlanName.equals=" + UPDATED_WLAN_NAME);
+        // Get all the wlanList where deviceId equals to UPDATED_DEVICE_ID
+        defaultWlanShouldNotBeFound("deviceId.equals=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllWlansByWlanNameIsInShouldWork() throws Exception {
+    public void getAllWlansByDeviceIdIsInShouldWork() throws Exception {
         // Initialize the database
         wlanRepository.saveAndFlush(wlan);
 
-        // Get all the wlanList where wlanName in DEFAULT_WLAN_NAME or UPDATED_WLAN_NAME
-        defaultWlanShouldBeFound("wlanName.in=" + DEFAULT_WLAN_NAME + "," + UPDATED_WLAN_NAME);
+        // Get all the wlanList where deviceId in DEFAULT_DEVICE_ID or UPDATED_DEVICE_ID
+        defaultWlanShouldBeFound("deviceId.in=" + DEFAULT_DEVICE_ID + "," + UPDATED_DEVICE_ID);
 
-        // Get all the wlanList where wlanName equals to UPDATED_WLAN_NAME
-        defaultWlanShouldNotBeFound("wlanName.in=" + UPDATED_WLAN_NAME);
+        // Get all the wlanList where deviceId equals to UPDATED_DEVICE_ID
+        defaultWlanShouldNotBeFound("deviceId.in=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllWlansByWlanNameIsNullOrNotNull() throws Exception {
+    public void getAllWlansByDeviceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         wlanRepository.saveAndFlush(wlan);
 
-        // Get all the wlanList where wlanName is not null
-        defaultWlanShouldBeFound("wlanName.specified=true");
+        // Get all the wlanList where deviceId is not null
+        defaultWlanShouldBeFound("deviceId.specified=true");
 
-        // Get all the wlanList where wlanName is null
-        defaultWlanShouldNotBeFound("wlanName.specified=false");
+        // Get all the wlanList where deviceId is null
+        defaultWlanShouldNotBeFound("deviceId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlansByServiceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        wlanRepository.saveAndFlush(wlan);
+
+        // Get all the wlanList where serviceName equals to DEFAULT_SERVICE_NAME
+        defaultWlanShouldBeFound("serviceName.equals=" + DEFAULT_SERVICE_NAME);
+
+        // Get all the wlanList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultWlanShouldNotBeFound("serviceName.equals=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlansByServiceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        wlanRepository.saveAndFlush(wlan);
+
+        // Get all the wlanList where serviceName in DEFAULT_SERVICE_NAME or UPDATED_SERVICE_NAME
+        defaultWlanShouldBeFound("serviceName.in=" + DEFAULT_SERVICE_NAME + "," + UPDATED_SERVICE_NAME);
+
+        // Get all the wlanList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultWlanShouldNotBeFound("serviceName.in=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlansByServiceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        wlanRepository.saveAndFlush(wlan);
+
+        // Get all the wlanList where serviceName is not null
+        defaultWlanShouldBeFound("serviceName.specified=true");
+
+        // Get all the wlanList where serviceName is null
+        defaultWlanShouldNotBeFound("serviceName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlansByDeviceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        wlanRepository.saveAndFlush(wlan);
+
+        // Get all the wlanList where deviceName equals to DEFAULT_DEVICE_NAME
+        defaultWlanShouldBeFound("deviceName.equals=" + DEFAULT_DEVICE_NAME);
+
+        // Get all the wlanList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultWlanShouldNotBeFound("deviceName.equals=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlansByDeviceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        wlanRepository.saveAndFlush(wlan);
+
+        // Get all the wlanList where deviceName in DEFAULT_DEVICE_NAME or UPDATED_DEVICE_NAME
+        defaultWlanShouldBeFound("deviceName.in=" + DEFAULT_DEVICE_NAME + "," + UPDATED_DEVICE_NAME);
+
+        // Get all the wlanList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultWlanShouldNotBeFound("deviceName.in=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlansByDeviceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        wlanRepository.saveAndFlush(wlan);
+
+        // Get all the wlanList where deviceName is not null
+        defaultWlanShouldBeFound("deviceName.specified=true");
+
+        // Get all the wlanList where deviceName is null
+        defaultWlanShouldNotBeFound("deviceName.specified=false");
     }
 
     @Test
@@ -330,8 +458,10 @@ public class WlanResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(wlan.getId().intValue())))
-            .andExpect(jsonPath("$.[*].networkId").value(hasItem(DEFAULT_NETWORK_ID.toString())))
-            .andExpect(jsonPath("$.[*].wlanName").value(hasItem(DEFAULT_WLAN_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     /**
@@ -367,8 +497,10 @@ public class WlanResourceIntTest {
         // Disconnect from session so that the updates on updatedWlan are not directly saved in db
         em.detach(updatedWlan);
         updatedWlan
-            .networkId(UPDATED_NETWORK_ID)
-            .wlanName(UPDATED_WLAN_NAME);
+            .serviceId(UPDATED_SERVICE_ID)
+            .deviceId(UPDATED_DEVICE_ID)
+            .serviceName(UPDATED_SERVICE_NAME)
+            .deviceName(UPDATED_DEVICE_NAME);
 
         restWlanMockMvc.perform(put("/api/wlans")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -379,8 +511,10 @@ public class WlanResourceIntTest {
         List<Wlan> wlanList = wlanRepository.findAll();
         assertThat(wlanList).hasSize(databaseSizeBeforeUpdate);
         Wlan testWlan = wlanList.get(wlanList.size() - 1);
-        assertThat(testWlan.getNetworkId()).isEqualTo(UPDATED_NETWORK_ID);
-        assertThat(testWlan.getWlanName()).isEqualTo(UPDATED_WLAN_NAME);
+        assertThat(testWlan.getServiceId()).isEqualTo(UPDATED_SERVICE_ID);
+        assertThat(testWlan.getDeviceId()).isEqualTo(UPDATED_DEVICE_ID);
+        assertThat(testWlan.getServiceName()).isEqualTo(UPDATED_SERVICE_NAME);
+        assertThat(testWlan.getDeviceName()).isEqualTo(UPDATED_DEVICE_NAME);
     }
 
     @Test

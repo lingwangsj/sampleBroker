@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
@@ -31,9 +32,10 @@ export class ZoneMySuffixDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.zoneService.find(id).subscribe((zone) => {
-            this.zone = zone;
-        });
+        this.zoneService.find(id)
+            .subscribe((zoneResponse: HttpResponse<ZoneMySuffix>) => {
+                this.zone = zoneResponse.body;
+            });
     }
     previousState() {
         window.history.back();

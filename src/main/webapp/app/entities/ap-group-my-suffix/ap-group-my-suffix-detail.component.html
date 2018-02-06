@@ -1,0 +1,56 @@
+
+<div *ngIf="aPGroup">
+    <h2><span>AP Group</span> {{aPGroup.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Service Id</span></dt>
+        <dd>
+            <span>{{aPGroup.serviceId}}</span>
+        </dd>
+        <dt><span>Device Id</span></dt>
+        <dd>
+            <span>{{aPGroup.deviceId}}</span>
+        </dd>
+        <dt><span>Service Name</span></dt>
+        <dd>
+            <span>{{aPGroup.serviceName}}</span>
+        </dd>
+        <dt><span>Device Name</span></dt>
+        <dd>
+            <span>{{aPGroup.deviceName}}</span>
+        </dd>
+        <dt><span>Wg 24</span></dt>
+        <dd>
+            <div *ngIf="aPGroup.wg24">
+                <a [routerLink]="['/wlan-group-my-suffix', aPGroup.wg24?.id]">{{aPGroup.wg24?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Wg 50</span></dt>
+        <dd>
+            <div *ngIf="aPGroup.wg50">
+                <a [routerLink]="['/wlan-group-my-suffix', aPGroup.wg50?.id]">{{aPGroup.wg50?.id}}</a>
+            </div>
+        </dd>
+        <dt><span>Zone</span></dt>
+        <dd>
+            <div *ngIf="aPGroup.zone">
+                <a [routerLink]="['/zone-my-suffix', aPGroup.zone?.id]">{{aPGroup.zone?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'ap-group-my-suffix/'+ aPGroup.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

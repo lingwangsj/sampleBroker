@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
@@ -31,9 +32,10 @@ export class WlanGroupMySuffixDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.wlanGroupService.find(id).subscribe((wlanGroup) => {
-            this.wlanGroup = wlanGroup;
-        });
+        this.wlanGroupService.find(id)
+            .subscribe((wlanGroupResponse: HttpResponse<WlanGroupMySuffix>) => {
+                this.wlanGroup = wlanGroupResponse.body;
+            });
     }
     previousState() {
         window.history.back();

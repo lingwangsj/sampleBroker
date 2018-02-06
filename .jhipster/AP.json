@@ -2,38 +2,22 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "one-to-one",
-            "relationshipName": "wg24",
-            "otherEntityName": "wlanGroup",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "aP"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "wg50",
-            "otherEntityName": "wlanGroup",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "aP"
-        },
-        {
             "relationshipType": "many-to-one",
-            "relationshipName": "zone",
-            "otherEntityName": "zone",
+            "relationshipName": "apgroup",
+            "otherEntityName": "aPGroup",
             "otherEntityField": "id"
         }
     ],
     "fields": [
         {
-            "fieldName": "serialNumber",
+            "fieldName": "serviceId",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "apName",
+            "fieldName": "serviceName",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
@@ -43,7 +27,7 @@
     "changelogDate": "20180119220921",
     "entityTableName": "ap",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "angularJSSuffix": "mySuffix"

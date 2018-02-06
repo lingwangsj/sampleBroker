@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,7 +11,6 @@ import { WlanGroupMySuffixPopupService } from './wlan-group-my-suffix-popup.serv
 import { WlanGroupMySuffixService } from './wlan-group-my-suffix.service';
 import { WlanMySuffix, WlanMySuffixService } from '../wlan-my-suffix';
 import { ZoneMySuffix, ZoneMySuffixService } from '../zone-my-suffix';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-wlan-group-my-suffix-dialog',
@@ -39,9 +38,9 @@ export class WlanGroupMySuffixDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.wlanService.query()
-            .subscribe((res: ResponseWrapper) => { this.wlans = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<WlanMySuffix[]>) => { this.wlans = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.zoneService.query()
-            .subscribe((res: ResponseWrapper) => { this.zones = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<ZoneMySuffix[]>) => { this.zones = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -59,9 +58,9 @@ export class WlanGroupMySuffixDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<WlanGroupMySuffix>) {
-        result.subscribe((res: WlanGroupMySuffix) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<WlanGroupMySuffix>>) {
+        result.subscribe((res: HttpResponse<WlanGroupMySuffix>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: WlanGroupMySuffix) {

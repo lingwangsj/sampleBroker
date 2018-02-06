@@ -28,9 +28,13 @@ public class DomainCriteria implements Serializable {
 
     private LongFilter id;
 
-    private StringFilter tenantId;
+    private StringFilter serviceId;
 
-    private StringFilter domainName;
+    private StringFilter deviceId;
+
+    private StringFilter serviceName;
+
+    private StringFilter deviceName;
 
     private LongFilter zoneId;
 
@@ -45,20 +49,36 @@ public class DomainCriteria implements Serializable {
         this.id = id;
     }
 
-    public StringFilter getTenantId() {
-        return tenantId;
+    public StringFilter getServiceId() {
+        return serviceId;
     }
 
-    public void setTenantId(StringFilter tenantId) {
-        this.tenantId = tenantId;
+    public void setServiceId(StringFilter serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public StringFilter getDomainName() {
-        return domainName;
+    public StringFilter getDeviceId() {
+        return deviceId;
     }
 
-    public void setDomainName(StringFilter domainName) {
-        this.domainName = domainName;
+    public void setDeviceId(StringFilter deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public StringFilter getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(StringFilter serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public StringFilter getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(StringFilter deviceName) {
+        this.deviceName = deviceName;
     }
 
     public LongFilter getZoneId() {
@@ -73,8 +93,10 @@ public class DomainCriteria implements Serializable {
     public String toString() {
         return "DomainCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (tenantId != null ? "tenantId=" + tenantId + ", " : "") +
-                (domainName != null ? "domainName=" + domainName + ", " : "") +
+                (serviceId != null ? "serviceId=" + serviceId + ", " : "") +
+                (deviceId != null ? "deviceId=" + deviceId + ", " : "") +
+                (serviceName != null ? "serviceName=" + serviceName + ", " : "") +
+                (deviceName != null ? "deviceName=" + deviceName + ", " : "") +
                 (zoneId != null ? "zoneId=" + zoneId + ", " : "") +
             "}";
     }

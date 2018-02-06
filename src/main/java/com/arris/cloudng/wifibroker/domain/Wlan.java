@@ -25,12 +25,20 @@ public class Wlan implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "network_id", nullable = false)
-    private String networkId;
+    @Column(name = "service_id", nullable = false)
+    private String serviceId;
 
     @NotNull
-    @Column(name = "wlan_name", nullable = false)
-    private String wlanName;
+    @Column(name = "device_id", nullable = false)
+    private String deviceId;
+
+    @NotNull
+    @Column(name = "service_name", nullable = false)
+    private String serviceName;
+
+    @NotNull
+    @Column(name = "device_name", nullable = false)
+    private String deviceName;
 
     @ManyToOne
     private Zone zone;
@@ -48,30 +56,56 @@ public class Wlan implements Serializable {
         this.id = id;
     }
 
-    public String getNetworkId() {
-        return networkId;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public Wlan networkId(String networkId) {
-        this.networkId = networkId;
+    public Wlan serviceId(String serviceId) {
+        this.serviceId = serviceId;
         return this;
     }
 
-    public void setNetworkId(String networkId) {
-        this.networkId = networkId;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public String getWlanName() {
-        return wlanName;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public Wlan wlanName(String wlanName) {
-        this.wlanName = wlanName;
+    public Wlan deviceId(String deviceId) {
+        this.deviceId = deviceId;
         return this;
     }
 
-    public void setWlanName(String wlanName) {
-        this.wlanName = wlanName;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public Wlan serviceName(String serviceName) {
+        this.serviceName = serviceName;
+        return this;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public Wlan deviceName(String deviceName) {
+        this.deviceName = deviceName;
+        return this;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     public Zone getZone() {
@@ -137,8 +171,10 @@ public class Wlan implements Serializable {
     public String toString() {
         return "Wlan{" +
             "id=" + getId() +
-            ", networkId='" + getNetworkId() + "'" +
-            ", wlanName='" + getWlanName() + "'" +
+            ", serviceId='" + getServiceId() + "'" +
+            ", deviceId='" + getDeviceId() + "'" +
+            ", serviceName='" + getServiceName() + "'" +
+            ", deviceName='" + getDeviceName() + "'" +
             "}";
     }
 }

@@ -1,66 +1,67 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
 import { WlanMySuffix } from './wlan-my-suffix.model';
-import { ResponseWrapper, createRequestOption } from '../../shared';
+import { createRequestOption } from '../../shared';
+
+export type EntityResponseType = HttpResponse<WlanMySuffix>;
 
 @Injectable()
 export class WlanMySuffixService {
 
     private resourceUrl =  SERVER_API_URL + 'api/wlans';
 
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
-    create(wlan: WlanMySuffix): Observable<WlanMySuffix> {
+    create(wlan: WlanMySuffix): Observable<EntityResponseType> {
         const copy = this.convert(wlan);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.post<WlanMySuffix>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    update(wlan: WlanMySuffix): Observable<WlanMySuffix> {
+    update(wlan: WlanMySuffix): Observable<EntityResponseType> {
         const copy = this.convert(wlan);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.put<WlanMySuffix>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    find(id: number): Observable<WlanMySuffix> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+    find(id: number): Observable<EntityResponseType> {
+        return this.http.get<WlanMySuffix>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    query(req?: any): Observable<ResponseWrapper> {
+    query(req?: any): Observable<HttpResponse<WlanMySuffix[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-            .map((res: Response) => this.convertResponse(res));
+        return this.http.get<WlanMySuffix[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<WlanMySuffix[]>) => this.convertArrayResponse(res));
     }
 
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
     }
 
-    private convertResponse(res: Response): ResponseWrapper {
-        const jsonResponse = res.json();
-        const result = [];
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: WlanMySuffix = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
+    private convertArrayResponse(res: HttpResponse<WlanMySuffix[]>): HttpResponse<WlanMySuffix[]> {
+        const jsonResponse: WlanMySuffix[] = res.body;
+        const body: WlanMySuffix[] = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            result.push(this.convertItemFromServer(jsonResponse[i]));
+            body.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, result, res.status);
+        return res.clone({body});
     }
 
     /**
      * Convert a returned JSON object to WlanMySuffix.
      */
-    private convertItemFromServer(json: any): WlanMySuffix {
-        const entity: WlanMySuffix = Object.assign(new WlanMySuffix(), json);
-        return entity;
+    private convertItemFromServer(wlan: WlanMySuffix): WlanMySuffix {
+        const copy: WlanMySuffix = Object.assign({}, wlan);
+        return copy;
     }
 
     /**

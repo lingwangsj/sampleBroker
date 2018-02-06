@@ -72,20 +72,14 @@ public class APQueryService extends QueryService<AP> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), AP_.id));
             }
-            if (criteria.getSerialNumber() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getSerialNumber(), AP_.serialNumber));
+            if (criteria.getServiceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceId(), AP_.serviceId));
             }
-            if (criteria.getApName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getApName(), AP_.apName));
+            if (criteria.getServiceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceName(), AP_.serviceName));
             }
-            if (criteria.getWg24Id() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getWg24Id(), AP_.wg24, WlanGroup_.id));
-            }
-            if (criteria.getWg50Id() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getWg50Id(), AP_.wg50, WlanGroup_.id));
-            }
-            if (criteria.getZoneId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getZoneId(), AP_.zone, Zone_.id));
+            if (criteria.getApgroupId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getApgroupId(), AP_.apgroup, APGroup_.id));
             }
         }
         return specification;

@@ -3,7 +3,7 @@ package com.arris.cloudng.wifibroker.web.rest;
 import com.arris.cloudng.wifibroker.SampleBrokerApp;
 
 import com.arris.cloudng.wifibroker.domain.Zone;
-import com.arris.cloudng.wifibroker.domain.AP;
+import com.arris.cloudng.wifibroker.domain.APGroup;
 import com.arris.cloudng.wifibroker.domain.WlanGroup;
 import com.arris.cloudng.wifibroker.domain.Wlan;
 import com.arris.cloudng.wifibroker.domain.Domain;
@@ -45,11 +45,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SampleBrokerApp.class)
 public class ZoneResourceIntTest {
 
-    private static final String DEFAULT_VENUE_ID = "AAAAAAAAAA";
-    private static final String UPDATED_VENUE_ID = "BBBBBBBBBB";
+    private static final String DEFAULT_SERVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_ID = "BBBBBBBBBB";
 
-    private static final String DEFAULT_ZONE_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_ZONE_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_DEVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_SERVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DEVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_NAME = "BBBBBBBBBB";
 
     @Autowired
     private ZoneRepository zoneRepository;
@@ -95,8 +101,10 @@ public class ZoneResourceIntTest {
      */
     public static Zone createEntity(EntityManager em) {
         Zone zone = new Zone()
-            .venueId(DEFAULT_VENUE_ID)
-            .zoneName(DEFAULT_ZONE_NAME);
+            .serviceId(DEFAULT_SERVICE_ID)
+            .deviceId(DEFAULT_DEVICE_ID)
+            .serviceName(DEFAULT_SERVICE_NAME)
+            .deviceName(DEFAULT_DEVICE_NAME);
         return zone;
     }
 
@@ -120,8 +128,10 @@ public class ZoneResourceIntTest {
         List<Zone> zoneList = zoneRepository.findAll();
         assertThat(zoneList).hasSize(databaseSizeBeforeCreate + 1);
         Zone testZone = zoneList.get(zoneList.size() - 1);
-        assertThat(testZone.getVenueId()).isEqualTo(DEFAULT_VENUE_ID);
-        assertThat(testZone.getZoneName()).isEqualTo(DEFAULT_ZONE_NAME);
+        assertThat(testZone.getServiceId()).isEqualTo(DEFAULT_SERVICE_ID);
+        assertThat(testZone.getDeviceId()).isEqualTo(DEFAULT_DEVICE_ID);
+        assertThat(testZone.getServiceName()).isEqualTo(DEFAULT_SERVICE_NAME);
+        assertThat(testZone.getDeviceName()).isEqualTo(DEFAULT_DEVICE_NAME);
     }
 
     @Test
@@ -145,10 +155,10 @@ public class ZoneResourceIntTest {
 
     @Test
     @Transactional
-    public void checkVenueIdIsRequired() throws Exception {
+    public void checkServiceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = zoneRepository.findAll().size();
         // set the field null
-        zone.setVenueId(null);
+        zone.setServiceId(null);
 
         // Create the Zone, which fails.
 
@@ -163,10 +173,46 @@ public class ZoneResourceIntTest {
 
     @Test
     @Transactional
-    public void checkZoneNameIsRequired() throws Exception {
+    public void checkDeviceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = zoneRepository.findAll().size();
         // set the field null
-        zone.setZoneName(null);
+        zone.setDeviceId(null);
+
+        // Create the Zone, which fails.
+
+        restZoneMockMvc.perform(post("/api/zones")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(zone)))
+            .andExpect(status().isBadRequest());
+
+        List<Zone> zoneList = zoneRepository.findAll();
+        assertThat(zoneList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkServiceNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = zoneRepository.findAll().size();
+        // set the field null
+        zone.setServiceName(null);
+
+        // Create the Zone, which fails.
+
+        restZoneMockMvc.perform(post("/api/zones")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(zone)))
+            .andExpect(status().isBadRequest());
+
+        List<Zone> zoneList = zoneRepository.findAll();
+        assertThat(zoneList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkDeviceNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = zoneRepository.findAll().size();
+        // set the field null
+        zone.setDeviceName(null);
 
         // Create the Zone, which fails.
 
@@ -190,8 +236,10 @@ public class ZoneResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(zone.getId().intValue())))
-            .andExpect(jsonPath("$.[*].venueId").value(hasItem(DEFAULT_VENUE_ID.toString())))
-            .andExpect(jsonPath("$.[*].zoneName").value(hasItem(DEFAULT_ZONE_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     @Test
@@ -205,93 +253,173 @@ public class ZoneResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(zone.getId().intValue()))
-            .andExpect(jsonPath("$.venueId").value(DEFAULT_VENUE_ID.toString()))
-            .andExpect(jsonPath("$.zoneName").value(DEFAULT_ZONE_NAME.toString()));
+            .andExpect(jsonPath("$.serviceId").value(DEFAULT_SERVICE_ID.toString()))
+            .andExpect(jsonPath("$.deviceId").value(DEFAULT_DEVICE_ID.toString()))
+            .andExpect(jsonPath("$.serviceName").value(DEFAULT_SERVICE_NAME.toString()))
+            .andExpect(jsonPath("$.deviceName").value(DEFAULT_DEVICE_NAME.toString()));
     }
 
     @Test
     @Transactional
-    public void getAllZonesByVenueIdIsEqualToSomething() throws Exception {
+    public void getAllZonesByServiceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         zoneRepository.saveAndFlush(zone);
 
-        // Get all the zoneList where venueId equals to DEFAULT_VENUE_ID
-        defaultZoneShouldBeFound("venueId.equals=" + DEFAULT_VENUE_ID);
+        // Get all the zoneList where serviceId equals to DEFAULT_SERVICE_ID
+        defaultZoneShouldBeFound("serviceId.equals=" + DEFAULT_SERVICE_ID);
 
-        // Get all the zoneList where venueId equals to UPDATED_VENUE_ID
-        defaultZoneShouldNotBeFound("venueId.equals=" + UPDATED_VENUE_ID);
+        // Get all the zoneList where serviceId equals to UPDATED_SERVICE_ID
+        defaultZoneShouldNotBeFound("serviceId.equals=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllZonesByVenueIdIsInShouldWork() throws Exception {
+    public void getAllZonesByServiceIdIsInShouldWork() throws Exception {
         // Initialize the database
         zoneRepository.saveAndFlush(zone);
 
-        // Get all the zoneList where venueId in DEFAULT_VENUE_ID or UPDATED_VENUE_ID
-        defaultZoneShouldBeFound("venueId.in=" + DEFAULT_VENUE_ID + "," + UPDATED_VENUE_ID);
+        // Get all the zoneList where serviceId in DEFAULT_SERVICE_ID or UPDATED_SERVICE_ID
+        defaultZoneShouldBeFound("serviceId.in=" + DEFAULT_SERVICE_ID + "," + UPDATED_SERVICE_ID);
 
-        // Get all the zoneList where venueId equals to UPDATED_VENUE_ID
-        defaultZoneShouldNotBeFound("venueId.in=" + UPDATED_VENUE_ID);
+        // Get all the zoneList where serviceId equals to UPDATED_SERVICE_ID
+        defaultZoneShouldNotBeFound("serviceId.in=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllZonesByVenueIdIsNullOrNotNull() throws Exception {
+    public void getAllZonesByServiceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         zoneRepository.saveAndFlush(zone);
 
-        // Get all the zoneList where venueId is not null
-        defaultZoneShouldBeFound("venueId.specified=true");
+        // Get all the zoneList where serviceId is not null
+        defaultZoneShouldBeFound("serviceId.specified=true");
 
-        // Get all the zoneList where venueId is null
-        defaultZoneShouldNotBeFound("venueId.specified=false");
+        // Get all the zoneList where serviceId is null
+        defaultZoneShouldNotBeFound("serviceId.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllZonesByZoneNameIsEqualToSomething() throws Exception {
+    public void getAllZonesByDeviceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         zoneRepository.saveAndFlush(zone);
 
-        // Get all the zoneList where zoneName equals to DEFAULT_ZONE_NAME
-        defaultZoneShouldBeFound("zoneName.equals=" + DEFAULT_ZONE_NAME);
+        // Get all the zoneList where deviceId equals to DEFAULT_DEVICE_ID
+        defaultZoneShouldBeFound("deviceId.equals=" + DEFAULT_DEVICE_ID);
 
-        // Get all the zoneList where zoneName equals to UPDATED_ZONE_NAME
-        defaultZoneShouldNotBeFound("zoneName.equals=" + UPDATED_ZONE_NAME);
+        // Get all the zoneList where deviceId equals to UPDATED_DEVICE_ID
+        defaultZoneShouldNotBeFound("deviceId.equals=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllZonesByZoneNameIsInShouldWork() throws Exception {
+    public void getAllZonesByDeviceIdIsInShouldWork() throws Exception {
         // Initialize the database
         zoneRepository.saveAndFlush(zone);
 
-        // Get all the zoneList where zoneName in DEFAULT_ZONE_NAME or UPDATED_ZONE_NAME
-        defaultZoneShouldBeFound("zoneName.in=" + DEFAULT_ZONE_NAME + "," + UPDATED_ZONE_NAME);
+        // Get all the zoneList where deviceId in DEFAULT_DEVICE_ID or UPDATED_DEVICE_ID
+        defaultZoneShouldBeFound("deviceId.in=" + DEFAULT_DEVICE_ID + "," + UPDATED_DEVICE_ID);
 
-        // Get all the zoneList where zoneName equals to UPDATED_ZONE_NAME
-        defaultZoneShouldNotBeFound("zoneName.in=" + UPDATED_ZONE_NAME);
+        // Get all the zoneList where deviceId equals to UPDATED_DEVICE_ID
+        defaultZoneShouldNotBeFound("deviceId.in=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllZonesByZoneNameIsNullOrNotNull() throws Exception {
+    public void getAllZonesByDeviceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         zoneRepository.saveAndFlush(zone);
 
-        // Get all the zoneList where zoneName is not null
-        defaultZoneShouldBeFound("zoneName.specified=true");
+        // Get all the zoneList where deviceId is not null
+        defaultZoneShouldBeFound("deviceId.specified=true");
 
-        // Get all the zoneList where zoneName is null
-        defaultZoneShouldNotBeFound("zoneName.specified=false");
+        // Get all the zoneList where deviceId is null
+        defaultZoneShouldNotBeFound("deviceId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllZonesByServiceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        zoneRepository.saveAndFlush(zone);
+
+        // Get all the zoneList where serviceName equals to DEFAULT_SERVICE_NAME
+        defaultZoneShouldBeFound("serviceName.equals=" + DEFAULT_SERVICE_NAME);
+
+        // Get all the zoneList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultZoneShouldNotBeFound("serviceName.equals=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllZonesByServiceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        zoneRepository.saveAndFlush(zone);
+
+        // Get all the zoneList where serviceName in DEFAULT_SERVICE_NAME or UPDATED_SERVICE_NAME
+        defaultZoneShouldBeFound("serviceName.in=" + DEFAULT_SERVICE_NAME + "," + UPDATED_SERVICE_NAME);
+
+        // Get all the zoneList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultZoneShouldNotBeFound("serviceName.in=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllZonesByServiceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        zoneRepository.saveAndFlush(zone);
+
+        // Get all the zoneList where serviceName is not null
+        defaultZoneShouldBeFound("serviceName.specified=true");
+
+        // Get all the zoneList where serviceName is null
+        defaultZoneShouldNotBeFound("serviceName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllZonesByDeviceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        zoneRepository.saveAndFlush(zone);
+
+        // Get all the zoneList where deviceName equals to DEFAULT_DEVICE_NAME
+        defaultZoneShouldBeFound("deviceName.equals=" + DEFAULT_DEVICE_NAME);
+
+        // Get all the zoneList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultZoneShouldNotBeFound("deviceName.equals=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllZonesByDeviceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        zoneRepository.saveAndFlush(zone);
+
+        // Get all the zoneList where deviceName in DEFAULT_DEVICE_NAME or UPDATED_DEVICE_NAME
+        defaultZoneShouldBeFound("deviceName.in=" + DEFAULT_DEVICE_NAME + "," + UPDATED_DEVICE_NAME);
+
+        // Get all the zoneList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultZoneShouldNotBeFound("deviceName.in=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllZonesByDeviceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        zoneRepository.saveAndFlush(zone);
+
+        // Get all the zoneList where deviceName is not null
+        defaultZoneShouldBeFound("deviceName.specified=true");
+
+        // Get all the zoneList where deviceName is null
+        defaultZoneShouldNotBeFound("deviceName.specified=false");
     }
 
     @Test
     @Transactional
     public void getAllZonesByApIsEqualToSomething() throws Exception {
         // Initialize the database
-        AP ap = APResourceIntTest.createEntity(em);
+        APGroup ap = APGroupResourceIntTest.createEntity(em);
         em.persist(ap);
         em.flush();
         zone.addAp(ap);
@@ -370,8 +498,10 @@ public class ZoneResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(zone.getId().intValue())))
-            .andExpect(jsonPath("$.[*].venueId").value(hasItem(DEFAULT_VENUE_ID.toString())))
-            .andExpect(jsonPath("$.[*].zoneName").value(hasItem(DEFAULT_ZONE_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     /**
@@ -407,8 +537,10 @@ public class ZoneResourceIntTest {
         // Disconnect from session so that the updates on updatedZone are not directly saved in db
         em.detach(updatedZone);
         updatedZone
-            .venueId(UPDATED_VENUE_ID)
-            .zoneName(UPDATED_ZONE_NAME);
+            .serviceId(UPDATED_SERVICE_ID)
+            .deviceId(UPDATED_DEVICE_ID)
+            .serviceName(UPDATED_SERVICE_NAME)
+            .deviceName(UPDATED_DEVICE_NAME);
 
         restZoneMockMvc.perform(put("/api/zones")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -419,8 +551,10 @@ public class ZoneResourceIntTest {
         List<Zone> zoneList = zoneRepository.findAll();
         assertThat(zoneList).hasSize(databaseSizeBeforeUpdate);
         Zone testZone = zoneList.get(zoneList.size() - 1);
-        assertThat(testZone.getVenueId()).isEqualTo(UPDATED_VENUE_ID);
-        assertThat(testZone.getZoneName()).isEqualTo(UPDATED_ZONE_NAME);
+        assertThat(testZone.getServiceId()).isEqualTo(UPDATED_SERVICE_ID);
+        assertThat(testZone.getDeviceId()).isEqualTo(UPDATED_DEVICE_ID);
+        assertThat(testZone.getServiceName()).isEqualTo(UPDATED_SERVICE_NAME);
+        assertThat(testZone.getDeviceName()).isEqualTo(UPDATED_DEVICE_NAME);
     }
 
     @Test

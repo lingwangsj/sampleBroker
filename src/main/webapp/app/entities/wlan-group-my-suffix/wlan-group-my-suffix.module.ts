@@ -13,6 +13,7 @@ import {
     WlanGroupMySuffixDeleteDialogComponent,
     wlanGroupRoute,
     wlanGroupPopupRoute,
+    WlanGroupMySuffixResolvePagingParams,
 } from './';
 
 const ENTITY_STATES = [
@@ -43,6 +44,7 @@ const ENTITY_STATES = [
     providers: [
         WlanGroupMySuffixService,
         WlanGroupMySuffixPopupService,
+        WlanGroupMySuffixResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

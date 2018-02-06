@@ -21,19 +21,15 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="serial_number" type="varchar(255)">
+            <column name="service_id" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
 
-            <column name="ap_name" type="varchar(255)">
+            <column name="service_name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="wg24_id" type="bigint">
-                <constraints unique="true" nullable="true" />
-            </column>            <column name="wg50_id" type="bigint">
-                <constraints unique="true" nullable="true" />
-            </column>
-            <column name="zone_id" type="bigint">
+
+            <column name="apgroup_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 

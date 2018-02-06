@@ -1,66 +1,67 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
 import { DomainMySuffix } from './domain-my-suffix.model';
-import { ResponseWrapper, createRequestOption } from '../../shared';
+import { createRequestOption } from '../../shared';
+
+export type EntityResponseType = HttpResponse<DomainMySuffix>;
 
 @Injectable()
 export class DomainMySuffixService {
 
     private resourceUrl =  SERVER_API_URL + 'api/domains';
 
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
-    create(domain: DomainMySuffix): Observable<DomainMySuffix> {
+    create(domain: DomainMySuffix): Observable<EntityResponseType> {
         const copy = this.convert(domain);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.post<DomainMySuffix>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    update(domain: DomainMySuffix): Observable<DomainMySuffix> {
+    update(domain: DomainMySuffix): Observable<EntityResponseType> {
         const copy = this.convert(domain);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.put<DomainMySuffix>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    find(id: number): Observable<DomainMySuffix> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+    find(id: number): Observable<EntityResponseType> {
+        return this.http.get<DomainMySuffix>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    query(req?: any): Observable<ResponseWrapper> {
+    query(req?: any): Observable<HttpResponse<DomainMySuffix[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-            .map((res: Response) => this.convertResponse(res));
+        return this.http.get<DomainMySuffix[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<DomainMySuffix[]>) => this.convertArrayResponse(res));
     }
 
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
     }
 
-    private convertResponse(res: Response): ResponseWrapper {
-        const jsonResponse = res.json();
-        const result = [];
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: DomainMySuffix = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
+    private convertArrayResponse(res: HttpResponse<DomainMySuffix[]>): HttpResponse<DomainMySuffix[]> {
+        const jsonResponse: DomainMySuffix[] = res.body;
+        const body: DomainMySuffix[] = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            result.push(this.convertItemFromServer(jsonResponse[i]));
+            body.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, result, res.status);
+        return res.clone({body});
     }
 
     /**
      * Convert a returned JSON object to DomainMySuffix.
      */
-    private convertItemFromServer(json: any): DomainMySuffix {
-        const entity: DomainMySuffix = Object.assign(new DomainMySuffix(), json);
-        return entity;
+    private convertItemFromServer(domain: DomainMySuffix): DomainMySuffix {
+        const copy: DomainMySuffix = Object.assign({}, domain);
+        return copy;
     }
 
     /**

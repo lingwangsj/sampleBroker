@@ -15,23 +15,19 @@
     <div class="table-responsive" *ngIf="wlanGroups">
         <table class="table table-striped">
             <thead>
-            <tr>
-            <th><span>ID</span></th>
-            <th><span>Group Name</span></th>
-            <th><span>Members</span></th>
-            <th><span>Zone</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="deviceId"><span>Device Id</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="deviceName"><span>Device Name</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="zone.id"><span>Zone</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let wlanGroup of wlanGroups ;trackBy: trackId">
                 <td><a [routerLink]="['../wlan-group-my-suffix', wlanGroup.id ]">{{wlanGroup.id}}</a></td>
-                <td>{{wlanGroup.groupName}}</td>
-                <td>
-                    <span *ngFor="let members of wlanGroup.members; let last = last">
-                            <a class="form-control-static" [routerLink]="['../wlan-my-suffix', members?.id ]">{{members.id}}</a>{{last ? '' : ', '}}
-                        </span>
-                </td>
+                <td>{{wlanGroup.deviceId}}</td>
+                <td>{{wlanGroup.deviceName}}</td>
                 <td>
                     <div *ngIf="wlanGroup.zone">
                         <a [routerLink]="['../zone-my-suffix', wlanGroup.zone?.id ]" >{{wlanGroup.zone?.id}}</a>
@@ -66,5 +62,13 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <div *ngIf="wlanGroups && wlanGroups.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
     </div>
 </div>

@@ -28,7 +28,9 @@ public class WlanGroupCriteria implements Serializable {
 
     private LongFilter id;
 
-    private StringFilter groupName;
+    private StringFilter deviceId;
+
+    private StringFilter deviceName;
 
     private LongFilter membersId;
 
@@ -45,12 +47,20 @@ public class WlanGroupCriteria implements Serializable {
         this.id = id;
     }
 
-    public StringFilter getGroupName() {
-        return groupName;
+    public StringFilter getDeviceId() {
+        return deviceId;
     }
 
-    public void setGroupName(StringFilter groupName) {
-        this.groupName = groupName;
+    public void setDeviceId(StringFilter deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public StringFilter getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(StringFilter deviceName) {
+        this.deviceName = deviceName;
     }
 
     public LongFilter getMembersId() {
@@ -73,7 +83,8 @@ public class WlanGroupCriteria implements Serializable {
     public String toString() {
         return "WlanGroupCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (groupName != null ? "groupName=" + groupName + ", " : "") +
+                (deviceId != null ? "deviceId=" + deviceId + ", " : "") +
+                (deviceName != null ? "deviceName=" + deviceName + ", " : "") +
                 (membersId != null ? "membersId=" + membersId + ", " : "") +
                 (zoneId != null ? "zoneId=" + zoneId + ", " : "") +
             "}";

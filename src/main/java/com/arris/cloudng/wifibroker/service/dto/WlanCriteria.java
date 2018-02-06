@@ -28,9 +28,13 @@ public class WlanCriteria implements Serializable {
 
     private LongFilter id;
 
-    private StringFilter networkId;
+    private StringFilter serviceId;
 
-    private StringFilter wlanName;
+    private StringFilter deviceId;
+
+    private StringFilter serviceName;
+
+    private StringFilter deviceName;
 
     private LongFilter zoneId;
 
@@ -47,20 +51,36 @@ public class WlanCriteria implements Serializable {
         this.id = id;
     }
 
-    public StringFilter getNetworkId() {
-        return networkId;
+    public StringFilter getServiceId() {
+        return serviceId;
     }
 
-    public void setNetworkId(StringFilter networkId) {
-        this.networkId = networkId;
+    public void setServiceId(StringFilter serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public StringFilter getWlanName() {
-        return wlanName;
+    public StringFilter getDeviceId() {
+        return deviceId;
     }
 
-    public void setWlanName(StringFilter wlanName) {
-        this.wlanName = wlanName;
+    public void setDeviceId(StringFilter deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public StringFilter getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(StringFilter serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public StringFilter getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(StringFilter deviceName) {
+        this.deviceName = deviceName;
     }
 
     public LongFilter getZoneId() {
@@ -83,8 +103,10 @@ public class WlanCriteria implements Serializable {
     public String toString() {
         return "WlanCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
-                (networkId != null ? "networkId=" + networkId + ", " : "") +
-                (wlanName != null ? "wlanName=" + wlanName + ", " : "") +
+                (serviceId != null ? "serviceId=" + serviceId + ", " : "") +
+                (deviceId != null ? "deviceId=" + deviceId + ", " : "") +
+                (serviceName != null ? "serviceName=" + serviceName + ", " : "") +
+                (deviceName != null ? "deviceName=" + deviceName + ", " : "") +
                 (zoneId != null ? "zoneId=" + zoneId + ", " : "") +
                 (groupId != null ? "groupId=" + groupId + ", " : "") +
             "}";

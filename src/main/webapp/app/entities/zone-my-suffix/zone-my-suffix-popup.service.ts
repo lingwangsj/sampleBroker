@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { ZoneMySuffix } from './zone-my-suffix.model';
 import { ZoneMySuffixService } from './zone-my-suffix.service';
 
@@ -25,10 +26,12 @@ export class ZoneMySuffixPopupService {
             }
 
             if (id) {
-                this.zoneService.find(id).subscribe((zone) => {
-                    this.ngbModalRef = this.zoneModalRef(component, zone);
-                    resolve(this.ngbModalRef);
-                });
+                this.zoneService.find(id)
+                    .subscribe((zoneResponse: HttpResponse<ZoneMySuffix>) => {
+                        const zone: ZoneMySuffix = zoneResponse.body;
+                        this.ngbModalRef = this.zoneModalRef(component, zone);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {
