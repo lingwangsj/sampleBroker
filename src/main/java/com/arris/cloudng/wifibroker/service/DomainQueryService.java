@@ -72,11 +72,17 @@ public class DomainQueryService extends QueryService<Domain> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Domain_.id));
             }
-            if (criteria.getTenantId() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getTenantId(), Domain_.tenantId));
+            if (criteria.getServiceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceId(), Domain_.serviceId));
             }
-            if (criteria.getDomainName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getDomainName(), Domain_.domainName));
+            if (criteria.getDeviceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceId(), Domain_.deviceId));
+            }
+            if (criteria.getServiceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceName(), Domain_.serviceName));
+            }
+            if (criteria.getDeviceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceName(), Domain_.deviceName));
             }
             if (criteria.getZoneId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getZoneId(), Domain_.zones, Zone_.id));

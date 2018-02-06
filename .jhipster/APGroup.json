@@ -1,0 +1,70 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "wg24",
+            "otherEntityName": "wlanGroup",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "aPGroup"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "wg50",
+            "otherEntityName": "wlanGroup",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "aPGroup"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "ap",
+            "otherEntityName": "aP",
+            "otherEntityRelationshipName": "apgroup"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "zone",
+            "otherEntityName": "zone",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "serviceId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "deviceId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "serviceName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "deviceName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20180206200453",
+    "entityTableName": "ap_group",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "angularJSSuffix": "mySuffix"
+}

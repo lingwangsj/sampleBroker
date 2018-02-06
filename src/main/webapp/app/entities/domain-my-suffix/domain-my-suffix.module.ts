@@ -13,6 +13,7 @@ import {
     DomainMySuffixDeleteDialogComponent,
     domainRoute,
     domainPopupRoute,
+    DomainMySuffixResolvePagingParams,
 } from './';
 
 const ENTITY_STATES = [
@@ -43,6 +44,7 @@ const ENTITY_STATES = [
     providers: [
         DomainMySuffixService,
         DomainMySuffixPopupService,
+        DomainMySuffixResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

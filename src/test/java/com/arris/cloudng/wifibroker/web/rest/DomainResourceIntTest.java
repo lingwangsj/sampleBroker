@@ -42,11 +42,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SampleBrokerApp.class)
 public class DomainResourceIntTest {
 
-    private static final String DEFAULT_TENANT_ID = "AAAAAAAAAA";
-    private static final String UPDATED_TENANT_ID = "BBBBBBBBBB";
+    private static final String DEFAULT_SERVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_ID = "BBBBBBBBBB";
 
-    private static final String DEFAULT_DOMAIN_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_DOMAIN_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_DEVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_SERVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DEVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_NAME = "BBBBBBBBBB";
 
     @Autowired
     private DomainRepository domainRepository;
@@ -92,8 +98,10 @@ public class DomainResourceIntTest {
      */
     public static Domain createEntity(EntityManager em) {
         Domain domain = new Domain()
-            .tenantId(DEFAULT_TENANT_ID)
-            .domainName(DEFAULT_DOMAIN_NAME);
+            .serviceId(DEFAULT_SERVICE_ID)
+            .deviceId(DEFAULT_DEVICE_ID)
+            .serviceName(DEFAULT_SERVICE_NAME)
+            .deviceName(DEFAULT_DEVICE_NAME);
         return domain;
     }
 
@@ -117,8 +125,10 @@ public class DomainResourceIntTest {
         List<Domain> domainList = domainRepository.findAll();
         assertThat(domainList).hasSize(databaseSizeBeforeCreate + 1);
         Domain testDomain = domainList.get(domainList.size() - 1);
-        assertThat(testDomain.getTenantId()).isEqualTo(DEFAULT_TENANT_ID);
-        assertThat(testDomain.getDomainName()).isEqualTo(DEFAULT_DOMAIN_NAME);
+        assertThat(testDomain.getServiceId()).isEqualTo(DEFAULT_SERVICE_ID);
+        assertThat(testDomain.getDeviceId()).isEqualTo(DEFAULT_DEVICE_ID);
+        assertThat(testDomain.getServiceName()).isEqualTo(DEFAULT_SERVICE_NAME);
+        assertThat(testDomain.getDeviceName()).isEqualTo(DEFAULT_DEVICE_NAME);
     }
 
     @Test
@@ -142,10 +152,10 @@ public class DomainResourceIntTest {
 
     @Test
     @Transactional
-    public void checkTenantIdIsRequired() throws Exception {
+    public void checkServiceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = domainRepository.findAll().size();
         // set the field null
-        domain.setTenantId(null);
+        domain.setServiceId(null);
 
         // Create the Domain, which fails.
 
@@ -160,10 +170,46 @@ public class DomainResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDomainNameIsRequired() throws Exception {
+    public void checkDeviceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = domainRepository.findAll().size();
         // set the field null
-        domain.setDomainName(null);
+        domain.setDeviceId(null);
+
+        // Create the Domain, which fails.
+
+        restDomainMockMvc.perform(post("/api/domains")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(domain)))
+            .andExpect(status().isBadRequest());
+
+        List<Domain> domainList = domainRepository.findAll();
+        assertThat(domainList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkServiceNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = domainRepository.findAll().size();
+        // set the field null
+        domain.setServiceName(null);
+
+        // Create the Domain, which fails.
+
+        restDomainMockMvc.perform(post("/api/domains")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(domain)))
+            .andExpect(status().isBadRequest());
+
+        List<Domain> domainList = domainRepository.findAll();
+        assertThat(domainList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkDeviceNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = domainRepository.findAll().size();
+        // set the field null
+        domain.setDeviceName(null);
 
         // Create the Domain, which fails.
 
@@ -187,8 +233,10 @@ public class DomainResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(domain.getId().intValue())))
-            .andExpect(jsonPath("$.[*].tenantId").value(hasItem(DEFAULT_TENANT_ID.toString())))
-            .andExpect(jsonPath("$.[*].domainName").value(hasItem(DEFAULT_DOMAIN_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     @Test
@@ -202,86 +250,166 @@ public class DomainResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(domain.getId().intValue()))
-            .andExpect(jsonPath("$.tenantId").value(DEFAULT_TENANT_ID.toString()))
-            .andExpect(jsonPath("$.domainName").value(DEFAULT_DOMAIN_NAME.toString()));
+            .andExpect(jsonPath("$.serviceId").value(DEFAULT_SERVICE_ID.toString()))
+            .andExpect(jsonPath("$.deviceId").value(DEFAULT_DEVICE_ID.toString()))
+            .andExpect(jsonPath("$.serviceName").value(DEFAULT_SERVICE_NAME.toString()))
+            .andExpect(jsonPath("$.deviceName").value(DEFAULT_DEVICE_NAME.toString()));
     }
 
     @Test
     @Transactional
-    public void getAllDomainsByTenantIdIsEqualToSomething() throws Exception {
+    public void getAllDomainsByServiceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         domainRepository.saveAndFlush(domain);
 
-        // Get all the domainList where tenantId equals to DEFAULT_TENANT_ID
-        defaultDomainShouldBeFound("tenantId.equals=" + DEFAULT_TENANT_ID);
+        // Get all the domainList where serviceId equals to DEFAULT_SERVICE_ID
+        defaultDomainShouldBeFound("serviceId.equals=" + DEFAULT_SERVICE_ID);
 
-        // Get all the domainList where tenantId equals to UPDATED_TENANT_ID
-        defaultDomainShouldNotBeFound("tenantId.equals=" + UPDATED_TENANT_ID);
+        // Get all the domainList where serviceId equals to UPDATED_SERVICE_ID
+        defaultDomainShouldNotBeFound("serviceId.equals=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllDomainsByTenantIdIsInShouldWork() throws Exception {
+    public void getAllDomainsByServiceIdIsInShouldWork() throws Exception {
         // Initialize the database
         domainRepository.saveAndFlush(domain);
 
-        // Get all the domainList where tenantId in DEFAULT_TENANT_ID or UPDATED_TENANT_ID
-        defaultDomainShouldBeFound("tenantId.in=" + DEFAULT_TENANT_ID + "," + UPDATED_TENANT_ID);
+        // Get all the domainList where serviceId in DEFAULT_SERVICE_ID or UPDATED_SERVICE_ID
+        defaultDomainShouldBeFound("serviceId.in=" + DEFAULT_SERVICE_ID + "," + UPDATED_SERVICE_ID);
 
-        // Get all the domainList where tenantId equals to UPDATED_TENANT_ID
-        defaultDomainShouldNotBeFound("tenantId.in=" + UPDATED_TENANT_ID);
+        // Get all the domainList where serviceId equals to UPDATED_SERVICE_ID
+        defaultDomainShouldNotBeFound("serviceId.in=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllDomainsByTenantIdIsNullOrNotNull() throws Exception {
+    public void getAllDomainsByServiceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         domainRepository.saveAndFlush(domain);
 
-        // Get all the domainList where tenantId is not null
-        defaultDomainShouldBeFound("tenantId.specified=true");
+        // Get all the domainList where serviceId is not null
+        defaultDomainShouldBeFound("serviceId.specified=true");
 
-        // Get all the domainList where tenantId is null
-        defaultDomainShouldNotBeFound("tenantId.specified=false");
+        // Get all the domainList where serviceId is null
+        defaultDomainShouldNotBeFound("serviceId.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllDomainsByDomainNameIsEqualToSomething() throws Exception {
+    public void getAllDomainsByDeviceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         domainRepository.saveAndFlush(domain);
 
-        // Get all the domainList where domainName equals to DEFAULT_DOMAIN_NAME
-        defaultDomainShouldBeFound("domainName.equals=" + DEFAULT_DOMAIN_NAME);
+        // Get all the domainList where deviceId equals to DEFAULT_DEVICE_ID
+        defaultDomainShouldBeFound("deviceId.equals=" + DEFAULT_DEVICE_ID);
 
-        // Get all the domainList where domainName equals to UPDATED_DOMAIN_NAME
-        defaultDomainShouldNotBeFound("domainName.equals=" + UPDATED_DOMAIN_NAME);
+        // Get all the domainList where deviceId equals to UPDATED_DEVICE_ID
+        defaultDomainShouldNotBeFound("deviceId.equals=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllDomainsByDomainNameIsInShouldWork() throws Exception {
+    public void getAllDomainsByDeviceIdIsInShouldWork() throws Exception {
         // Initialize the database
         domainRepository.saveAndFlush(domain);
 
-        // Get all the domainList where domainName in DEFAULT_DOMAIN_NAME or UPDATED_DOMAIN_NAME
-        defaultDomainShouldBeFound("domainName.in=" + DEFAULT_DOMAIN_NAME + "," + UPDATED_DOMAIN_NAME);
+        // Get all the domainList where deviceId in DEFAULT_DEVICE_ID or UPDATED_DEVICE_ID
+        defaultDomainShouldBeFound("deviceId.in=" + DEFAULT_DEVICE_ID + "," + UPDATED_DEVICE_ID);
 
-        // Get all the domainList where domainName equals to UPDATED_DOMAIN_NAME
-        defaultDomainShouldNotBeFound("domainName.in=" + UPDATED_DOMAIN_NAME);
+        // Get all the domainList where deviceId equals to UPDATED_DEVICE_ID
+        defaultDomainShouldNotBeFound("deviceId.in=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllDomainsByDomainNameIsNullOrNotNull() throws Exception {
+    public void getAllDomainsByDeviceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         domainRepository.saveAndFlush(domain);
 
-        // Get all the domainList where domainName is not null
-        defaultDomainShouldBeFound("domainName.specified=true");
+        // Get all the domainList where deviceId is not null
+        defaultDomainShouldBeFound("deviceId.specified=true");
 
-        // Get all the domainList where domainName is null
-        defaultDomainShouldNotBeFound("domainName.specified=false");
+        // Get all the domainList where deviceId is null
+        defaultDomainShouldNotBeFound("deviceId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllDomainsByServiceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        domainRepository.saveAndFlush(domain);
+
+        // Get all the domainList where serviceName equals to DEFAULT_SERVICE_NAME
+        defaultDomainShouldBeFound("serviceName.equals=" + DEFAULT_SERVICE_NAME);
+
+        // Get all the domainList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultDomainShouldNotBeFound("serviceName.equals=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDomainsByServiceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        domainRepository.saveAndFlush(domain);
+
+        // Get all the domainList where serviceName in DEFAULT_SERVICE_NAME or UPDATED_SERVICE_NAME
+        defaultDomainShouldBeFound("serviceName.in=" + DEFAULT_SERVICE_NAME + "," + UPDATED_SERVICE_NAME);
+
+        // Get all the domainList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultDomainShouldNotBeFound("serviceName.in=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDomainsByServiceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        domainRepository.saveAndFlush(domain);
+
+        // Get all the domainList where serviceName is not null
+        defaultDomainShouldBeFound("serviceName.specified=true");
+
+        // Get all the domainList where serviceName is null
+        defaultDomainShouldNotBeFound("serviceName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllDomainsByDeviceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        domainRepository.saveAndFlush(domain);
+
+        // Get all the domainList where deviceName equals to DEFAULT_DEVICE_NAME
+        defaultDomainShouldBeFound("deviceName.equals=" + DEFAULT_DEVICE_NAME);
+
+        // Get all the domainList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultDomainShouldNotBeFound("deviceName.equals=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDomainsByDeviceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        domainRepository.saveAndFlush(domain);
+
+        // Get all the domainList where deviceName in DEFAULT_DEVICE_NAME or UPDATED_DEVICE_NAME
+        defaultDomainShouldBeFound("deviceName.in=" + DEFAULT_DEVICE_NAME + "," + UPDATED_DEVICE_NAME);
+
+        // Get all the domainList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultDomainShouldNotBeFound("deviceName.in=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllDomainsByDeviceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        domainRepository.saveAndFlush(domain);
+
+        // Get all the domainList where deviceName is not null
+        defaultDomainShouldBeFound("deviceName.specified=true");
+
+        // Get all the domainList where deviceName is null
+        defaultDomainShouldNotBeFound("deviceName.specified=false");
     }
 
     @Test
@@ -310,8 +438,10 @@ public class DomainResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(domain.getId().intValue())))
-            .andExpect(jsonPath("$.[*].tenantId").value(hasItem(DEFAULT_TENANT_ID.toString())))
-            .andExpect(jsonPath("$.[*].domainName").value(hasItem(DEFAULT_DOMAIN_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     /**
@@ -347,8 +477,10 @@ public class DomainResourceIntTest {
         // Disconnect from session so that the updates on updatedDomain are not directly saved in db
         em.detach(updatedDomain);
         updatedDomain
-            .tenantId(UPDATED_TENANT_ID)
-            .domainName(UPDATED_DOMAIN_NAME);
+            .serviceId(UPDATED_SERVICE_ID)
+            .deviceId(UPDATED_DEVICE_ID)
+            .serviceName(UPDATED_SERVICE_NAME)
+            .deviceName(UPDATED_DEVICE_NAME);
 
         restDomainMockMvc.perform(put("/api/domains")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -359,8 +491,10 @@ public class DomainResourceIntTest {
         List<Domain> domainList = domainRepository.findAll();
         assertThat(domainList).hasSize(databaseSizeBeforeUpdate);
         Domain testDomain = domainList.get(domainList.size() - 1);
-        assertThat(testDomain.getTenantId()).isEqualTo(UPDATED_TENANT_ID);
-        assertThat(testDomain.getDomainName()).isEqualTo(UPDATED_DOMAIN_NAME);
+        assertThat(testDomain.getServiceId()).isEqualTo(UPDATED_SERVICE_ID);
+        assertThat(testDomain.getDeviceId()).isEqualTo(UPDATED_DEVICE_ID);
+        assertThat(testDomain.getServiceName()).isEqualTo(UPDATED_SERVICE_NAME);
+        assertThat(testDomain.getDeviceName()).isEqualTo(UPDATED_DEVICE_NAME);
     }
 
     @Test

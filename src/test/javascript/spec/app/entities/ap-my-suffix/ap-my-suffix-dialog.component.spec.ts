@@ -1,5 +1,6 @@
 /* tslint:disable max-line-length */
 import { ComponentFixture, TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
+import { HttpResponse } from '@angular/common/http';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager } from 'ng-jhipster';
@@ -8,8 +9,7 @@ import { SampleBrokerTestModule } from '../../../test.module';
 import { APMySuffixDialogComponent } from '../../../../../../main/webapp/app/entities/ap-my-suffix/ap-my-suffix-dialog.component';
 import { APMySuffixService } from '../../../../../../main/webapp/app/entities/ap-my-suffix/ap-my-suffix.service';
 import { APMySuffix } from '../../../../../../main/webapp/app/entities/ap-my-suffix/ap-my-suffix.model';
-import { WlanGroupMySuffixService } from '../../../../../../main/webapp/app/entities/wlan-group-my-suffix';
-import { ZoneMySuffixService } from '../../../../../../main/webapp/app/entities/zone-my-suffix';
+import { APGroupMySuffixService } from '../../../../../../main/webapp/app/entities/ap-group-my-suffix';
 
 describe('Component Tests', () => {
 
@@ -25,8 +25,7 @@ describe('Component Tests', () => {
                 imports: [SampleBrokerTestModule],
                 declarations: [APMySuffixDialogComponent],
                 providers: [
-                    WlanGroupMySuffixService,
-                    ZoneMySuffixService,
+                    APGroupMySuffixService,
                     APMySuffixService
                 ]
             })
@@ -48,7 +47,7 @@ describe('Component Tests', () => {
                     fakeAsync(() => {
                         // GIVEN
                         const entity = new APMySuffix(123);
-                        spyOn(service, 'update').and.returnValue(Observable.of(entity));
+                        spyOn(service, 'update').and.returnValue(Observable.of(new HttpResponse({body: entity})));
                         comp.aP = entity;
                         // WHEN
                         comp.save();
@@ -68,7 +67,7 @@ describe('Component Tests', () => {
                     fakeAsync(() => {
                         // GIVEN
                         const entity = new APMySuffix();
-                        spyOn(service, 'create').and.returnValue(Observable.of(entity));
+                        spyOn(service, 'create').and.returnValue(Observable.of(new HttpResponse({body: entity})));
                         comp.aP = entity;
                         // WHEN
                         comp.save();

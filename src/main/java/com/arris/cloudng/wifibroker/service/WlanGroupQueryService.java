@@ -72,8 +72,11 @@ public class WlanGroupQueryService extends QueryService<WlanGroup> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), WlanGroup_.id));
             }
-            if (criteria.getGroupName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getGroupName(), WlanGroup_.groupName));
+            if (criteria.getDeviceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceId(), WlanGroup_.deviceId));
+            }
+            if (criteria.getDeviceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceName(), WlanGroup_.deviceName));
             }
             if (criteria.getMembersId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getMembersId(), WlanGroup_.members, Wlan_.id));

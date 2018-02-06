@@ -43,8 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SampleBrokerApp.class)
 public class WlanGroupResourceIntTest {
 
-    private static final String DEFAULT_GROUP_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_GROUP_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_DEVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_DEVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_DEVICE_NAME = "BBBBBBBBBB";
 
     @Autowired
     private WlanGroupRepository wlanGroupRepository;
@@ -90,7 +93,8 @@ public class WlanGroupResourceIntTest {
      */
     public static WlanGroup createEntity(EntityManager em) {
         WlanGroup wlanGroup = new WlanGroup()
-            .groupName(DEFAULT_GROUP_NAME);
+            .deviceId(DEFAULT_DEVICE_ID)
+            .deviceName(DEFAULT_DEVICE_NAME);
         return wlanGroup;
     }
 
@@ -114,7 +118,8 @@ public class WlanGroupResourceIntTest {
         List<WlanGroup> wlanGroupList = wlanGroupRepository.findAll();
         assertThat(wlanGroupList).hasSize(databaseSizeBeforeCreate + 1);
         WlanGroup testWlanGroup = wlanGroupList.get(wlanGroupList.size() - 1);
-        assertThat(testWlanGroup.getGroupName()).isEqualTo(DEFAULT_GROUP_NAME);
+        assertThat(testWlanGroup.getDeviceId()).isEqualTo(DEFAULT_DEVICE_ID);
+        assertThat(testWlanGroup.getDeviceName()).isEqualTo(DEFAULT_DEVICE_NAME);
     }
 
     @Test
@@ -138,10 +143,28 @@ public class WlanGroupResourceIntTest {
 
     @Test
     @Transactional
-    public void checkGroupNameIsRequired() throws Exception {
+    public void checkDeviceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = wlanGroupRepository.findAll().size();
         // set the field null
-        wlanGroup.setGroupName(null);
+        wlanGroup.setDeviceId(null);
+
+        // Create the WlanGroup, which fails.
+
+        restWlanGroupMockMvc.perform(post("/api/wlan-groups")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(wlanGroup)))
+            .andExpect(status().isBadRequest());
+
+        List<WlanGroup> wlanGroupList = wlanGroupRepository.findAll();
+        assertThat(wlanGroupList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkDeviceNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = wlanGroupRepository.findAll().size();
+        // set the field null
+        wlanGroup.setDeviceName(null);
 
         // Create the WlanGroup, which fails.
 
@@ -165,7 +188,8 @@ public class WlanGroupResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(wlanGroup.getId().intValue())))
-            .andExpect(jsonPath("$.[*].groupName").value(hasItem(DEFAULT_GROUP_NAME.toString())));
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     @Test
@@ -179,46 +203,86 @@ public class WlanGroupResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(wlanGroup.getId().intValue()))
-            .andExpect(jsonPath("$.groupName").value(DEFAULT_GROUP_NAME.toString()));
+            .andExpect(jsonPath("$.deviceId").value(DEFAULT_DEVICE_ID.toString()))
+            .andExpect(jsonPath("$.deviceName").value(DEFAULT_DEVICE_NAME.toString()));
     }
 
     @Test
     @Transactional
-    public void getAllWlanGroupsByGroupNameIsEqualToSomething() throws Exception {
+    public void getAllWlanGroupsByDeviceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         wlanGroupRepository.saveAndFlush(wlanGroup);
 
-        // Get all the wlanGroupList where groupName equals to DEFAULT_GROUP_NAME
-        defaultWlanGroupShouldBeFound("groupName.equals=" + DEFAULT_GROUP_NAME);
+        // Get all the wlanGroupList where deviceId equals to DEFAULT_DEVICE_ID
+        defaultWlanGroupShouldBeFound("deviceId.equals=" + DEFAULT_DEVICE_ID);
 
-        // Get all the wlanGroupList where groupName equals to UPDATED_GROUP_NAME
-        defaultWlanGroupShouldNotBeFound("groupName.equals=" + UPDATED_GROUP_NAME);
+        // Get all the wlanGroupList where deviceId equals to UPDATED_DEVICE_ID
+        defaultWlanGroupShouldNotBeFound("deviceId.equals=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllWlanGroupsByGroupNameIsInShouldWork() throws Exception {
+    public void getAllWlanGroupsByDeviceIdIsInShouldWork() throws Exception {
         // Initialize the database
         wlanGroupRepository.saveAndFlush(wlanGroup);
 
-        // Get all the wlanGroupList where groupName in DEFAULT_GROUP_NAME or UPDATED_GROUP_NAME
-        defaultWlanGroupShouldBeFound("groupName.in=" + DEFAULT_GROUP_NAME + "," + UPDATED_GROUP_NAME);
+        // Get all the wlanGroupList where deviceId in DEFAULT_DEVICE_ID or UPDATED_DEVICE_ID
+        defaultWlanGroupShouldBeFound("deviceId.in=" + DEFAULT_DEVICE_ID + "," + UPDATED_DEVICE_ID);
 
-        // Get all the wlanGroupList where groupName equals to UPDATED_GROUP_NAME
-        defaultWlanGroupShouldNotBeFound("groupName.in=" + UPDATED_GROUP_NAME);
+        // Get all the wlanGroupList where deviceId equals to UPDATED_DEVICE_ID
+        defaultWlanGroupShouldNotBeFound("deviceId.in=" + UPDATED_DEVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllWlanGroupsByGroupNameIsNullOrNotNull() throws Exception {
+    public void getAllWlanGroupsByDeviceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         wlanGroupRepository.saveAndFlush(wlanGroup);
 
-        // Get all the wlanGroupList where groupName is not null
-        defaultWlanGroupShouldBeFound("groupName.specified=true");
+        // Get all the wlanGroupList where deviceId is not null
+        defaultWlanGroupShouldBeFound("deviceId.specified=true");
 
-        // Get all the wlanGroupList where groupName is null
-        defaultWlanGroupShouldNotBeFound("groupName.specified=false");
+        // Get all the wlanGroupList where deviceId is null
+        defaultWlanGroupShouldNotBeFound("deviceId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlanGroupsByDeviceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        wlanGroupRepository.saveAndFlush(wlanGroup);
+
+        // Get all the wlanGroupList where deviceName equals to DEFAULT_DEVICE_NAME
+        defaultWlanGroupShouldBeFound("deviceName.equals=" + DEFAULT_DEVICE_NAME);
+
+        // Get all the wlanGroupList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultWlanGroupShouldNotBeFound("deviceName.equals=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlanGroupsByDeviceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        wlanGroupRepository.saveAndFlush(wlanGroup);
+
+        // Get all the wlanGroupList where deviceName in DEFAULT_DEVICE_NAME or UPDATED_DEVICE_NAME
+        defaultWlanGroupShouldBeFound("deviceName.in=" + DEFAULT_DEVICE_NAME + "," + UPDATED_DEVICE_NAME);
+
+        // Get all the wlanGroupList where deviceName equals to UPDATED_DEVICE_NAME
+        defaultWlanGroupShouldNotBeFound("deviceName.in=" + UPDATED_DEVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllWlanGroupsByDeviceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        wlanGroupRepository.saveAndFlush(wlanGroup);
+
+        // Get all the wlanGroupList where deviceName is not null
+        defaultWlanGroupShouldBeFound("deviceName.specified=true");
+
+        // Get all the wlanGroupList where deviceName is null
+        defaultWlanGroupShouldNotBeFound("deviceName.specified=false");
     }
 
     @Test
@@ -266,7 +330,8 @@ public class WlanGroupResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(wlanGroup.getId().intValue())))
-            .andExpect(jsonPath("$.[*].groupName").value(hasItem(DEFAULT_GROUP_NAME.toString())));
+            .andExpect(jsonPath("$.[*].deviceId").value(hasItem(DEFAULT_DEVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].deviceName").value(hasItem(DEFAULT_DEVICE_NAME.toString())));
     }
 
     /**
@@ -302,7 +367,8 @@ public class WlanGroupResourceIntTest {
         // Disconnect from session so that the updates on updatedWlanGroup are not directly saved in db
         em.detach(updatedWlanGroup);
         updatedWlanGroup
-            .groupName(UPDATED_GROUP_NAME);
+            .deviceId(UPDATED_DEVICE_ID)
+            .deviceName(UPDATED_DEVICE_NAME);
 
         restWlanGroupMockMvc.perform(put("/api/wlan-groups")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -313,7 +379,8 @@ public class WlanGroupResourceIntTest {
         List<WlanGroup> wlanGroupList = wlanGroupRepository.findAll();
         assertThat(wlanGroupList).hasSize(databaseSizeBeforeUpdate);
         WlanGroup testWlanGroup = wlanGroupList.get(wlanGroupList.size() - 1);
-        assertThat(testWlanGroup.getGroupName()).isEqualTo(UPDATED_GROUP_NAME);
+        assertThat(testWlanGroup.getDeviceId()).isEqualTo(UPDATED_DEVICE_ID);
+        assertThat(testWlanGroup.getDeviceName()).isEqualTo(UPDATED_DEVICE_NAME);
     }
 
     @Test

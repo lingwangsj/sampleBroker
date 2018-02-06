@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -9,9 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { APMySuffix } from './ap-my-suffix.model';
 import { APMySuffixPopupService } from './ap-my-suffix-popup.service';
 import { APMySuffixService } from './ap-my-suffix.service';
-import { WlanGroupMySuffix, WlanGroupMySuffixService } from '../wlan-group-my-suffix';
-import { ZoneMySuffix, ZoneMySuffixService } from '../zone-my-suffix';
-import { ResponseWrapper } from '../../shared';
+import { APGroupMySuffix, APGroupMySuffixService } from '../ap-group-my-suffix';
 
 @Component({
     selector: 'jhi-ap-my-suffix-dialog',
@@ -22,52 +20,21 @@ export class APMySuffixDialogComponent implements OnInit {
     aP: APMySuffix;
     isSaving: boolean;
 
-    wg24s: WlanGroupMySuffix[];
-
-    wg50s: WlanGroupMySuffix[];
-
-    zones: ZoneMySuffix[];
+    apgroups: APGroupMySuffix[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private aPService: APMySuffixService,
-        private wlanGroupService: WlanGroupMySuffixService,
-        private zoneService: ZoneMySuffixService,
+        private aPGroupService: APGroupMySuffixService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.wlanGroupService
-            .query({filter: 'ap-is-null'})
-            .subscribe((res: ResponseWrapper) => {
-                if (!this.aP.wg24 || !this.aP.wg24.id) {
-                    this.wg24s = res.json;
-                } else {
-                    this.wlanGroupService
-                        .find(this.aP.wg24.id)
-                        .subscribe((subRes: WlanGroupMySuffix) => {
-                            this.wg24s = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
-                }
-            }, (res: ResponseWrapper) => this.onError(res.json));
-        this.wlanGroupService
-            .query({filter: 'ap-is-null'})
-            .subscribe((res: ResponseWrapper) => {
-                if (!this.aP.wg50 || !this.aP.wg50.id) {
-                    this.wg50s = res.json;
-                } else {
-                    this.wlanGroupService
-                        .find(this.aP.wg50.id)
-                        .subscribe((subRes: WlanGroupMySuffix) => {
-                            this.wg50s = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
-                }
-            }, (res: ResponseWrapper) => this.onError(res.json));
-        this.zoneService.query()
-            .subscribe((res: ResponseWrapper) => { this.zones = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.aPGroupService.query()
+            .subscribe((res: HttpResponse<APGroupMySuffix[]>) => { this.apgroups = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -85,9 +52,9 @@ export class APMySuffixDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<APMySuffix>) {
-        result.subscribe((res: APMySuffix) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<APMySuffix>>) {
+        result.subscribe((res: HttpResponse<APMySuffix>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: APMySuffix) {
@@ -104,11 +71,7 @@ export class APMySuffixDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackWlanGroupById(index: number, item: WlanGroupMySuffix) {
-        return item.id;
-    }
-
-    trackZoneById(index: number, item: ZoneMySuffix) {
+    trackAPGroupById(index: number, item: APGroupMySuffix) {
         return item.id;
     }
 }

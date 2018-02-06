@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DomainMySuffix } from './domain-my-suffix.model';
 import { DomainMySuffixService } from './domain-my-suffix.service';
 
@@ -25,10 +26,12 @@ export class DomainMySuffixPopupService {
             }
 
             if (id) {
-                this.domainService.find(id).subscribe((domain) => {
-                    this.ngbModalRef = this.domainModalRef(component, domain);
-                    resolve(this.ngbModalRef);
-                });
+                this.domainService.find(id)
+                    .subscribe((domainResponse: HttpResponse<DomainMySuffix>) => {
+                        const domain: DomainMySuffix = domainResponse.body;
+                        this.ngbModalRef = this.domainModalRef(component, domain);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

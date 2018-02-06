@@ -1,30 +1,44 @@
 entity Domain {
-    tenantId String required
-	domainName String required
+    serviceId String required
+    deviceId  String required
+	serviceName String required
+    deviceName String required
 }
 
 entity Zone {
-	venueId String required
-	zoneName String required
+	serviceId String required
+    deviceId String required
+    serviceName String required
+	deviceName String required
 }
 
 entity Wlan {
-    networkId String required
-	wlanName String required
+    serviceId String required
+    deviceId String required
+	serviceName String required
+    deviceName String required
 }
 
 entity WlanGroup {
-	groupName String required
+	deviceId String required
+	deviceName String required
+}
+
+entity APGroup {
+	serviceId String required
+    deviceId  String required
+	serviceName String required
+    deviceName String required
 }
 
 entity AP {
-	serialNumber String required,
-    apName String required
+	serviceId String required,
+    serviceName String required
 }
 
 relationship OneToOne {
-    AP{wg24} to WlanGroup,
-    AP{wg50} to WlanGroup
+    APGroup{wg24} to WlanGroup,
+    APGroup{wg50} to WlanGroup
 }
 
 relationship ManyToMany {
@@ -34,9 +48,10 @@ relationship ManyToMany {
 // defining multiple OneToMany relationships with comments
 relationship OneToMany {
     Domain{zone} to Zone{domain},
-    Zone{ap} to AP{zone},
+    Zone{ap} to APGroup{zone},
     Zone{wlanGroup} to WlanGroup{zone},
-    Zone{wlan} to Wlan{zone}
+    Zone{wlan} to Wlan{zone},
+    APGroup{ap} to AP{apgroup}
 }
 
 // Set pagination options
@@ -46,6 +61,7 @@ relationship OneToMany {
 //dto * with mapstruct
 
 // Set service options to all except few
+paginate * with pagination
 filter *
 // Set an angular suffix
 angularSuffix * with mySuffix

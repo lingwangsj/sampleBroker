@@ -3,9 +3,7 @@ package com.arris.cloudng.wifibroker.web.rest;
 import com.arris.cloudng.wifibroker.SampleBrokerApp;
 
 import com.arris.cloudng.wifibroker.domain.AP;
-import com.arris.cloudng.wifibroker.domain.WlanGroup;
-import com.arris.cloudng.wifibroker.domain.WlanGroup;
-import com.arris.cloudng.wifibroker.domain.Zone;
+import com.arris.cloudng.wifibroker.domain.APGroup;
 import com.arris.cloudng.wifibroker.repository.APRepository;
 import com.arris.cloudng.wifibroker.service.APService;
 import com.arris.cloudng.wifibroker.web.rest.errors.ExceptionTranslator;
@@ -44,11 +42,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SampleBrokerApp.class)
 public class APResourceIntTest {
 
-    private static final String DEFAULT_SERIAL_NUMBER = "AAAAAAAAAA";
-    private static final String UPDATED_SERIAL_NUMBER = "BBBBBBBBBB";
+    private static final String DEFAULT_SERVICE_ID = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_ID = "BBBBBBBBBB";
 
-    private static final String DEFAULT_AP_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_AP_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_SERVICE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_SERVICE_NAME = "BBBBBBBBBB";
 
     @Autowired
     private APRepository aPRepository;
@@ -94,8 +92,8 @@ public class APResourceIntTest {
      */
     public static AP createEntity(EntityManager em) {
         AP aP = new AP()
-            .serialNumber(DEFAULT_SERIAL_NUMBER)
-            .apName(DEFAULT_AP_NAME);
+            .serviceId(DEFAULT_SERVICE_ID)
+            .serviceName(DEFAULT_SERVICE_NAME);
         return aP;
     }
 
@@ -119,8 +117,8 @@ public class APResourceIntTest {
         List<AP> aPList = aPRepository.findAll();
         assertThat(aPList).hasSize(databaseSizeBeforeCreate + 1);
         AP testAP = aPList.get(aPList.size() - 1);
-        assertThat(testAP.getSerialNumber()).isEqualTo(DEFAULT_SERIAL_NUMBER);
-        assertThat(testAP.getApName()).isEqualTo(DEFAULT_AP_NAME);
+        assertThat(testAP.getServiceId()).isEqualTo(DEFAULT_SERVICE_ID);
+        assertThat(testAP.getServiceName()).isEqualTo(DEFAULT_SERVICE_NAME);
     }
 
     @Test
@@ -144,10 +142,10 @@ public class APResourceIntTest {
 
     @Test
     @Transactional
-    public void checkSerialNumberIsRequired() throws Exception {
+    public void checkServiceIdIsRequired() throws Exception {
         int databaseSizeBeforeTest = aPRepository.findAll().size();
         // set the field null
-        aP.setSerialNumber(null);
+        aP.setServiceId(null);
 
         // Create the AP, which fails.
 
@@ -162,10 +160,10 @@ public class APResourceIntTest {
 
     @Test
     @Transactional
-    public void checkApNameIsRequired() throws Exception {
+    public void checkServiceNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = aPRepository.findAll().size();
         // set the field null
-        aP.setApName(null);
+        aP.setServiceName(null);
 
         // Create the AP, which fails.
 
@@ -189,8 +187,8 @@ public class APResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(aP.getId().intValue())))
-            .andExpect(jsonPath("$.[*].serialNumber").value(hasItem(DEFAULT_SERIAL_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].apName").value(hasItem(DEFAULT_AP_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())));
     }
 
     @Test
@@ -204,142 +202,104 @@ public class APResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(aP.getId().intValue()))
-            .andExpect(jsonPath("$.serialNumber").value(DEFAULT_SERIAL_NUMBER.toString()))
-            .andExpect(jsonPath("$.apName").value(DEFAULT_AP_NAME.toString()));
+            .andExpect(jsonPath("$.serviceId").value(DEFAULT_SERVICE_ID.toString()))
+            .andExpect(jsonPath("$.serviceName").value(DEFAULT_SERVICE_NAME.toString()));
     }
 
     @Test
     @Transactional
-    public void getAllAPSBySerialNumberIsEqualToSomething() throws Exception {
+    public void getAllAPSByServiceIdIsEqualToSomething() throws Exception {
         // Initialize the database
         aPRepository.saveAndFlush(aP);
 
-        // Get all the aPList where serialNumber equals to DEFAULT_SERIAL_NUMBER
-        defaultAPShouldBeFound("serialNumber.equals=" + DEFAULT_SERIAL_NUMBER);
+        // Get all the aPList where serviceId equals to DEFAULT_SERVICE_ID
+        defaultAPShouldBeFound("serviceId.equals=" + DEFAULT_SERVICE_ID);
 
-        // Get all the aPList where serialNumber equals to UPDATED_SERIAL_NUMBER
-        defaultAPShouldNotBeFound("serialNumber.equals=" + UPDATED_SERIAL_NUMBER);
+        // Get all the aPList where serviceId equals to UPDATED_SERVICE_ID
+        defaultAPShouldNotBeFound("serviceId.equals=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllAPSBySerialNumberIsInShouldWork() throws Exception {
+    public void getAllAPSByServiceIdIsInShouldWork() throws Exception {
         // Initialize the database
         aPRepository.saveAndFlush(aP);
 
-        // Get all the aPList where serialNumber in DEFAULT_SERIAL_NUMBER or UPDATED_SERIAL_NUMBER
-        defaultAPShouldBeFound("serialNumber.in=" + DEFAULT_SERIAL_NUMBER + "," + UPDATED_SERIAL_NUMBER);
+        // Get all the aPList where serviceId in DEFAULT_SERVICE_ID or UPDATED_SERVICE_ID
+        defaultAPShouldBeFound("serviceId.in=" + DEFAULT_SERVICE_ID + "," + UPDATED_SERVICE_ID);
 
-        // Get all the aPList where serialNumber equals to UPDATED_SERIAL_NUMBER
-        defaultAPShouldNotBeFound("serialNumber.in=" + UPDATED_SERIAL_NUMBER);
+        // Get all the aPList where serviceId equals to UPDATED_SERVICE_ID
+        defaultAPShouldNotBeFound("serviceId.in=" + UPDATED_SERVICE_ID);
     }
 
     @Test
     @Transactional
-    public void getAllAPSBySerialNumberIsNullOrNotNull() throws Exception {
+    public void getAllAPSByServiceIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         aPRepository.saveAndFlush(aP);
 
-        // Get all the aPList where serialNumber is not null
-        defaultAPShouldBeFound("serialNumber.specified=true");
+        // Get all the aPList where serviceId is not null
+        defaultAPShouldBeFound("serviceId.specified=true");
 
-        // Get all the aPList where serialNumber is null
-        defaultAPShouldNotBeFound("serialNumber.specified=false");
+        // Get all the aPList where serviceId is null
+        defaultAPShouldNotBeFound("serviceId.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllAPSByApNameIsEqualToSomething() throws Exception {
+    public void getAllAPSByServiceNameIsEqualToSomething() throws Exception {
         // Initialize the database
         aPRepository.saveAndFlush(aP);
 
-        // Get all the aPList where apName equals to DEFAULT_AP_NAME
-        defaultAPShouldBeFound("apName.equals=" + DEFAULT_AP_NAME);
+        // Get all the aPList where serviceName equals to DEFAULT_SERVICE_NAME
+        defaultAPShouldBeFound("serviceName.equals=" + DEFAULT_SERVICE_NAME);
 
-        // Get all the aPList where apName equals to UPDATED_AP_NAME
-        defaultAPShouldNotBeFound("apName.equals=" + UPDATED_AP_NAME);
+        // Get all the aPList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultAPShouldNotBeFound("serviceName.equals=" + UPDATED_SERVICE_NAME);
     }
 
     @Test
     @Transactional
-    public void getAllAPSByApNameIsInShouldWork() throws Exception {
+    public void getAllAPSByServiceNameIsInShouldWork() throws Exception {
         // Initialize the database
         aPRepository.saveAndFlush(aP);
 
-        // Get all the aPList where apName in DEFAULT_AP_NAME or UPDATED_AP_NAME
-        defaultAPShouldBeFound("apName.in=" + DEFAULT_AP_NAME + "," + UPDATED_AP_NAME);
+        // Get all the aPList where serviceName in DEFAULT_SERVICE_NAME or UPDATED_SERVICE_NAME
+        defaultAPShouldBeFound("serviceName.in=" + DEFAULT_SERVICE_NAME + "," + UPDATED_SERVICE_NAME);
 
-        // Get all the aPList where apName equals to UPDATED_AP_NAME
-        defaultAPShouldNotBeFound("apName.in=" + UPDATED_AP_NAME);
+        // Get all the aPList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultAPShouldNotBeFound("serviceName.in=" + UPDATED_SERVICE_NAME);
     }
 
     @Test
     @Transactional
-    public void getAllAPSByApNameIsNullOrNotNull() throws Exception {
+    public void getAllAPSByServiceNameIsNullOrNotNull() throws Exception {
         // Initialize the database
         aPRepository.saveAndFlush(aP);
 
-        // Get all the aPList where apName is not null
-        defaultAPShouldBeFound("apName.specified=true");
+        // Get all the aPList where serviceName is not null
+        defaultAPShouldBeFound("serviceName.specified=true");
 
-        // Get all the aPList where apName is null
-        defaultAPShouldNotBeFound("apName.specified=false");
+        // Get all the aPList where serviceName is null
+        defaultAPShouldNotBeFound("serviceName.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllAPSByWg24IsEqualToSomething() throws Exception {
+    public void getAllAPSByApgroupIsEqualToSomething() throws Exception {
         // Initialize the database
-        WlanGroup wg24 = WlanGroupResourceIntTest.createEntity(em);
-        em.persist(wg24);
+        APGroup apgroup = APGroupResourceIntTest.createEntity(em);
+        em.persist(apgroup);
         em.flush();
-        aP.setWg24(wg24);
+        aP.setApgroup(apgroup);
         aPRepository.saveAndFlush(aP);
-        Long wg24Id = wg24.getId();
+        Long apgroupId = apgroup.getId();
 
-        // Get all the aPList where wg24 equals to wg24Id
-        defaultAPShouldBeFound("wg24Id.equals=" + wg24Id);
+        // Get all the aPList where apgroup equals to apgroupId
+        defaultAPShouldBeFound("apgroupId.equals=" + apgroupId);
 
-        // Get all the aPList where wg24 equals to wg24Id + 1
-        defaultAPShouldNotBeFound("wg24Id.equals=" + (wg24Id + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllAPSByWg50IsEqualToSomething() throws Exception {
-        // Initialize the database
-        WlanGroup wg50 = WlanGroupResourceIntTest.createEntity(em);
-        em.persist(wg50);
-        em.flush();
-        aP.setWg50(wg50);
-        aPRepository.saveAndFlush(aP);
-        Long wg50Id = wg50.getId();
-
-        // Get all the aPList where wg50 equals to wg50Id
-        defaultAPShouldBeFound("wg50Id.equals=" + wg50Id);
-
-        // Get all the aPList where wg50 equals to wg50Id + 1
-        defaultAPShouldNotBeFound("wg50Id.equals=" + (wg50Id + 1));
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllAPSByZoneIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Zone zone = ZoneResourceIntTest.createEntity(em);
-        em.persist(zone);
-        em.flush();
-        aP.setZone(zone);
-        aPRepository.saveAndFlush(aP);
-        Long zoneId = zone.getId();
-
-        // Get all the aPList where zone equals to zoneId
-        defaultAPShouldBeFound("zoneId.equals=" + zoneId);
-
-        // Get all the aPList where zone equals to zoneId + 1
-        defaultAPShouldNotBeFound("zoneId.equals=" + (zoneId + 1));
+        // Get all the aPList where apgroup equals to apgroupId + 1
+        defaultAPShouldNotBeFound("apgroupId.equals=" + (apgroupId + 1));
     }
 
     /**
@@ -350,8 +310,8 @@ public class APResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(aP.getId().intValue())))
-            .andExpect(jsonPath("$.[*].serialNumber").value(hasItem(DEFAULT_SERIAL_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].apName").value(hasItem(DEFAULT_AP_NAME.toString())));
+            .andExpect(jsonPath("$.[*].serviceId").value(hasItem(DEFAULT_SERVICE_ID.toString())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME.toString())));
     }
 
     /**
@@ -387,8 +347,8 @@ public class APResourceIntTest {
         // Disconnect from session so that the updates on updatedAP are not directly saved in db
         em.detach(updatedAP);
         updatedAP
-            .serialNumber(UPDATED_SERIAL_NUMBER)
-            .apName(UPDATED_AP_NAME);
+            .serviceId(UPDATED_SERVICE_ID)
+            .serviceName(UPDATED_SERVICE_NAME);
 
         restAPMockMvc.perform(put("/api/aps")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -399,8 +359,8 @@ public class APResourceIntTest {
         List<AP> aPList = aPRepository.findAll();
         assertThat(aPList).hasSize(databaseSizeBeforeUpdate);
         AP testAP = aPList.get(aPList.size() - 1);
-        assertThat(testAP.getSerialNumber()).isEqualTo(UPDATED_SERIAL_NUMBER);
-        assertThat(testAP.getApName()).isEqualTo(UPDATED_AP_NAME);
+        assertThat(testAP.getServiceId()).isEqualTo(UPDATED_SERVICE_ID);
+        assertThat(testAP.getServiceName()).isEqualTo(UPDATED_SERVICE_NAME);
     }
 
     @Test

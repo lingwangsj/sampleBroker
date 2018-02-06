@@ -24,8 +24,12 @@ public class WlanGroup implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "group_name", nullable = false)
-    private String groupName;
+    @Column(name = "device_id", nullable = false)
+    private String deviceId;
+
+    @NotNull
+    @Column(name = "device_name", nullable = false)
+    private String deviceName;
 
     @ManyToMany
     @JoinTable(name = "wlan_group_members",
@@ -45,17 +49,30 @@ public class WlanGroup implements Serializable {
         this.id = id;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public WlanGroup groupName(String groupName) {
-        this.groupName = groupName;
+    public WlanGroup deviceId(String deviceId) {
+        this.deviceId = deviceId;
         return this;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public WlanGroup deviceName(String deviceName) {
+        this.deviceName = deviceName;
+        return this;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 
     public Set<Wlan> getMembers() {
@@ -121,7 +138,8 @@ public class WlanGroup implements Serializable {
     public String toString() {
         return "WlanGroup{" +
             "id=" + getId() +
-            ", groupName='" + getGroupName() + "'" +
+            ", deviceId='" + getDeviceId() + "'" +
+            ", deviceName='" + getDeviceName() + "'" +
             "}";
     }
 }

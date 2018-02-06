@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { APMySuffix } from './ap-my-suffix.model';
 import { APMySuffixService } from './ap-my-suffix.service';
 
@@ -25,10 +26,12 @@ export class APMySuffixPopupService {
             }
 
             if (id) {
-                this.aPService.find(id).subscribe((aP) => {
-                    this.ngbModalRef = this.aPModalRef(component, aP);
-                    resolve(this.ngbModalRef);
-                });
+                this.aPService.find(id)
+                    .subscribe((aPResponse: HttpResponse<APMySuffix>) => {
+                        const aP: APMySuffix = aPResponse.body;
+                        this.ngbModalRef = this.aPModalRef(component, aP);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

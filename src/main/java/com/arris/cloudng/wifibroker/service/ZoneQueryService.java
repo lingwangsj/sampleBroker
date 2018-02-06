@@ -72,14 +72,20 @@ public class ZoneQueryService extends QueryService<Zone> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Zone_.id));
             }
-            if (criteria.getVenueId() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getVenueId(), Zone_.venueId));
+            if (criteria.getServiceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceId(), Zone_.serviceId));
             }
-            if (criteria.getZoneName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getZoneName(), Zone_.zoneName));
+            if (criteria.getDeviceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceId(), Zone_.deviceId));
+            }
+            if (criteria.getServiceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceName(), Zone_.serviceName));
+            }
+            if (criteria.getDeviceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceName(), Zone_.deviceName));
             }
             if (criteria.getApId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getApId(), Zone_.aps, AP_.id));
+                specification = specification.and(buildReferringEntitySpecification(criteria.getApId(), Zone_.aps, APGroup_.id));
             }
             if (criteria.getWlanGroupId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getWlanGroupId(), Zone_.wlanGroups, WlanGroup_.id));

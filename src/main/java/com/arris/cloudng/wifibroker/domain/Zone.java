@@ -25,16 +25,24 @@ public class Zone implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "venue_id", nullable = false)
-    private String venueId;
+    @Column(name = "service_id", nullable = false)
+    private String serviceId;
 
     @NotNull
-    @Column(name = "zone_name", nullable = false)
-    private String zoneName;
+    @Column(name = "device_id", nullable = false)
+    private String deviceId;
+
+    @NotNull
+    @Column(name = "service_name", nullable = false)
+    private String serviceName;
+
+    @NotNull
+    @Column(name = "device_name", nullable = false)
+    private String deviceName;
 
     @OneToMany(mappedBy = "zone")
     @JsonIgnore
-    private Set<AP> aps = new HashSet<>();
+    private Set<APGroup> aps = new HashSet<>();
 
     @OneToMany(mappedBy = "zone")
     @JsonIgnore
@@ -56,55 +64,81 @@ public class Zone implements Serializable {
         this.id = id;
     }
 
-    public String getVenueId() {
-        return venueId;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public Zone venueId(String venueId) {
-        this.venueId = venueId;
+    public Zone serviceId(String serviceId) {
+        this.serviceId = serviceId;
         return this;
     }
 
-    public void setVenueId(String venueId) {
-        this.venueId = venueId;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public String getZoneName() {
-        return zoneName;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public Zone zoneName(String zoneName) {
-        this.zoneName = zoneName;
+    public Zone deviceId(String deviceId) {
+        this.deviceId = deviceId;
         return this;
     }
 
-    public void setZoneName(String zoneName) {
-        this.zoneName = zoneName;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
-    public Set<AP> getAps() {
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public Zone serviceName(String serviceName) {
+        this.serviceName = serviceName;
+        return this;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public Zone deviceName(String deviceName) {
+        this.deviceName = deviceName;
+        return this;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public Set<APGroup> getAps() {
         return aps;
     }
 
-    public Zone aps(Set<AP> aPS) {
-        this.aps = aPS;
+    public Zone aps(Set<APGroup> aPGroups) {
+        this.aps = aPGroups;
         return this;
     }
 
-    public Zone addAp(AP aP) {
-        this.aps.add(aP);
-        aP.setZone(this);
+    public Zone addAp(APGroup aPGroup) {
+        this.aps.add(aPGroup);
+        aPGroup.setZone(this);
         return this;
     }
 
-    public Zone removeAp(AP aP) {
-        this.aps.remove(aP);
-        aP.setZone(null);
+    public Zone removeAp(APGroup aPGroup) {
+        this.aps.remove(aPGroup);
+        aPGroup.setZone(null);
         return this;
     }
 
-    public void setAps(Set<AP> aPS) {
-        this.aps = aPS;
+    public void setAps(Set<APGroup> aPGroups) {
+        this.aps = aPGroups;
     }
 
     public Set<WlanGroup> getWlanGroups() {
@@ -195,8 +229,10 @@ public class Zone implements Serializable {
     public String toString() {
         return "Zone{" +
             "id=" + getId() +
-            ", venueId='" + getVenueId() + "'" +
-            ", zoneName='" + getZoneName() + "'" +
+            ", serviceId='" + getServiceId() + "'" +
+            ", deviceId='" + getDeviceId() + "'" +
+            ", serviceName='" + getServiceName() + "'" +
+            ", deviceName='" + getDeviceName() + "'" +
             "}";
     }
 }

@@ -4,7 +4,7 @@
         {
             "relationshipType": "one-to-many",
             "relationshipName": "ap",
-            "otherEntityName": "aP",
+            "otherEntityName": "aPGroup",
             "otherEntityRelationshipName": "zone"
         },
         {
@@ -28,14 +28,28 @@
     ],
     "fields": [
         {
-            "fieldName": "venueId",
+            "fieldName": "serviceId",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "zoneName",
+            "fieldName": "deviceId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "serviceName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "deviceName",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
@@ -45,7 +59,7 @@
     "changelogDate": "20180119220918",
     "entityTableName": "zone",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "angularJSSuffix": "mySuffix"

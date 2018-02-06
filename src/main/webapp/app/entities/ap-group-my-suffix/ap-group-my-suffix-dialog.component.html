@@ -1,0 +1,90 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myAPGroupLabel">Create or edit a AP Group</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!aPGroup.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="aPGroup.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_serviceId">Service Id</label>
+            <input type="text" class="form-control" name="serviceId" id="field_serviceId"
+                [(ngModel)]="aPGroup.serviceId" required/>
+            <div [hidden]="!(editForm.controls.serviceId?.dirty && editForm.controls.serviceId?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.serviceId?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_deviceId">Device Id</label>
+            <input type="text" class="form-control" name="deviceId" id="field_deviceId"
+                [(ngModel)]="aPGroup.deviceId" required/>
+            <div [hidden]="!(editForm.controls.deviceId?.dirty && editForm.controls.deviceId?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.deviceId?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_serviceName">Service Name</label>
+            <input type="text" class="form-control" name="serviceName" id="field_serviceName"
+                [(ngModel)]="aPGroup.serviceName" required/>
+            <div [hidden]="!(editForm.controls.serviceName?.dirty && editForm.controls.serviceName?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.serviceName?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_deviceName">Device Name</label>
+            <input type="text" class="form-control" name="deviceName" id="field_deviceName"
+                [(ngModel)]="aPGroup.deviceName" required/>
+            <div [hidden]="!(editForm.controls.deviceName?.dirty && editForm.controls.deviceName?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.deviceName?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_wg24">Wg 24</label>
+            <select class="form-control" id="field_wg24" name="wg24" [(ngModel)]="aPGroup.wg24">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="wlanGroupOption.id === aPGroup.wg24?.id ? aPGroup.wg24 : wlanGroupOption" *ngFor="let wlanGroupOption of wg24s; trackBy: trackWlanGroupById">{{wlanGroupOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_wg50">Wg 50</label>
+            <select class="form-control" id="field_wg50" name="wg50" [(ngModel)]="aPGroup.wg50">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="wlanGroupOption.id === aPGroup.wg50?.id ? aPGroup.wg50 : wlanGroupOption" *ngFor="let wlanGroupOption of wg50s; trackBy: trackWlanGroupById">{{wlanGroupOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_zone">Zone</label>
+            <select class="form-control" id="field_zone" name="zone" [(ngModel)]="aPGroup.zone" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="zoneOption.id === aPGroup.zone?.id ? aPGroup.zone : zoneOption" *ngFor="let zoneOption of zones; trackBy: trackZoneById">{{zoneOption.id}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

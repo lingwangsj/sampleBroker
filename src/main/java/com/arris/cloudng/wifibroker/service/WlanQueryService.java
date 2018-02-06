@@ -72,11 +72,17 @@ public class WlanQueryService extends QueryService<Wlan> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildSpecification(criteria.getId(), Wlan_.id));
             }
-            if (criteria.getNetworkId() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getNetworkId(), Wlan_.networkId));
+            if (criteria.getServiceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceId(), Wlan_.serviceId));
             }
-            if (criteria.getWlanName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getWlanName(), Wlan_.wlanName));
+            if (criteria.getDeviceId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceId(), Wlan_.deviceId));
+            }
+            if (criteria.getServiceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getServiceName(), Wlan_.serviceName));
+            }
+            if (criteria.getDeviceName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getDeviceName(), Wlan_.deviceName));
             }
             if (criteria.getZoneId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getZoneId(), Wlan_.zone, Zone_.id));

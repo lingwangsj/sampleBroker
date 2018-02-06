@@ -4,30 +4,18 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span>Serial Number</span></dt>
+        <dt><span>Service Id</span></dt>
         <dd>
-            <span>{{aP.serialNumber}}</span>
+            <span>{{aP.serviceId}}</span>
         </dd>
-        <dt><span>Ap Name</span></dt>
+        <dt><span>Service Name</span></dt>
         <dd>
-            <span>{{aP.apName}}</span>
+            <span>{{aP.serviceName}}</span>
         </dd>
-        <dt><span>Wg 24</span></dt>
+        <dt><span>Apgroup</span></dt>
         <dd>
-            <div *ngIf="aP.wg24">
-                <a [routerLink]="['/wlan-group-my-suffix', aP.wg24?.id]">{{aP.wg24?.id}}</a>
-            </div>
-        </dd>
-        <dt><span>Wg 50</span></dt>
-        <dd>
-            <div *ngIf="aP.wg50">
-                <a [routerLink]="['/wlan-group-my-suffix', aP.wg50?.id]">{{aP.wg50?.id}}</a>
-            </div>
-        </dd>
-        <dt><span>Zone</span></dt>
-        <dd>
-            <div *ngIf="aP.zone">
-                <a [routerLink]="['/zone-my-suffix', aP.zone?.id]">{{aP.zone?.id}}</a>
+            <div *ngIf="aP.apgroup">
+                <a [routerLink]="['/ap-group-my-suffix', aP.apgroup?.id]">{{aP.apgroup?.id}}</a>
             </div>
         </dd>
     </dl>

@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { WlanMySuffix } from './wlan-my-suffix.model';
 import { WlanMySuffixService } from './wlan-my-suffix.service';
 
@@ -25,10 +26,12 @@ export class WlanMySuffixPopupService {
             }
 
             if (id) {
-                this.wlanService.find(id).subscribe((wlan) => {
-                    this.ngbModalRef = this.wlanModalRef(component, wlan);
-                    resolve(this.ngbModalRef);
-                });
+                this.wlanService.find(id)
+                    .subscribe((wlanResponse: HttpResponse<WlanMySuffix>) => {
+                        const wlan: WlanMySuffix = wlanResponse.body;
+                        this.ngbModalRef = this.wlanModalRef(component, wlan);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

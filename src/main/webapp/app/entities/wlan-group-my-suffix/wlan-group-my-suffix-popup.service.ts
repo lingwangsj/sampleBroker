@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { WlanGroupMySuffix } from './wlan-group-my-suffix.model';
 import { WlanGroupMySuffixService } from './wlan-group-my-suffix.service';
 
@@ -25,10 +26,12 @@ export class WlanGroupMySuffixPopupService {
             }
 
             if (id) {
-                this.wlanGroupService.find(id).subscribe((wlanGroup) => {
-                    this.ngbModalRef = this.wlanGroupModalRef(component, wlanGroup);
-                    resolve(this.ngbModalRef);
-                });
+                this.wlanGroupService.find(id)
+                    .subscribe((wlanGroupResponse: HttpResponse<WlanGroupMySuffix>) => {
+                        const wlanGroup: WlanGroupMySuffix = wlanGroupResponse.body;
+                        this.ngbModalRef = this.wlanGroupModalRef(component, wlanGroup);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

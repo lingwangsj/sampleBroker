@@ -13,6 +13,7 @@ import {
     APMySuffixDeleteDialogComponent,
     aPRoute,
     aPPopupRoute,
+    APMySuffixResolvePagingParams,
 } from './';
 
 const ENTITY_STATES = [
@@ -43,6 +44,7 @@ const ENTITY_STATES = [
     providers: [
         APMySuffixService,
         APMySuffixPopupService,
+        APMySuffixResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

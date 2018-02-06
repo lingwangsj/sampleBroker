@@ -13,12 +13,23 @@
                    [(ngModel)]="wlanGroup.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_groupName">Group Name</label>
-            <input type="text" class="form-control" name="groupName" id="field_groupName"
-                [(ngModel)]="wlanGroup.groupName" required/>
-            <div [hidden]="!(editForm.controls.groupName?.dirty && editForm.controls.groupName?.invalid)">
+            <label class="form-control-label" for="field_deviceId">Device Id</label>
+            <input type="text" class="form-control" name="deviceId" id="field_deviceId"
+                [(ngModel)]="wlanGroup.deviceId" required/>
+            <div [hidden]="!(editForm.controls.deviceId?.dirty && editForm.controls.deviceId?.invalid)">
                 <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.groupName?.errors?.required">
+                   [hidden]="!editForm.controls.deviceId?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_deviceName">Device Name</label>
+            <input type="text" class="form-control" name="deviceName" id="field_deviceName"
+                [(ngModel)]="wlanGroup.deviceName" required/>
+            <div [hidden]="!(editForm.controls.deviceName?.dirty && editForm.controls.deviceName?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.deviceName?.errors?.required">
                    This field is required.
                 </small>
             </div>

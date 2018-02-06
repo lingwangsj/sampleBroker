@@ -18,7 +18,14 @@
     ],
     "fields": [
         {
-            "fieldName": "groupName",
+            "fieldName": "deviceId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "deviceName",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required"
@@ -28,7 +35,7 @@
     "changelogDate": "20180119220920",
     "entityTableName": "wlan_group",
     "dto": "no",
-    "pagination": "no",
+    "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": true,
     "angularJSSuffix": "mySuffix"
